@@ -1,0 +1,84 @@
+{
+  "users": [
+    {
+      "id": "admin",
+      "username": "paola.mejia",
+      "password": "Admin2026#",
+      "role": "admin",
+      "name": "Paola Mejía",
+      "title": "Administradora de Sistemas y Tecnología Externa"
+    },
+    {
+      "id": "oscar",
+      "username": "oscar.gonzalez",
+      "password": "Oscar2026#",
+      "role": "colaborador",
+      "name": "Oscar González",
+      "title": "Coordinador de Soporte Técnico"
+    },
+    {
+      "id": "jorge",
+      "username": "jorge.perez",
+      "password": "Jorge2026#",
+      "role": "colaborador",
+      "name": "Jorge Mario Pérez",
+      "title": "Coordinador de Infraestructura y Seguridad"
+    },
+    {
+      "id": "cristina",
+      "username": "cristina.caal",
+      "password": "Cristina2026#",
+      "role": "colaborador",
+      "name": "Cristina Caal",
+      "title": "Técnico de Redes e Infraestructura"
+    },
+    {
+      "id": "silvia",
+      "username": "silvia.ramos",
+      "password": "Silvia2026#",
+      "role": "colaborador",
+      "name": "Silvia Ramos",
+      "title": "Documentación, Procesos y Soporte de Software"
+    },
+    {
+      "id": "angel",
+      "username": "angel.cardona",
+      "password": "Angel2026#",
+      "role": "colaborador",
+      "name": "Ángel Cardona",
+      "title": "Administrador de Software"
+    },
+    {
+      "id": "rudy",
+      "username": "rudy.argueta",
+      "password": "Rudy2026#",
+      "role": "colaborador",
+      "name": "Rudy Argueta",
+      "title": "Administrador de Base de Datos"
+    },
+    {
+      "id": "wilfred",
+      "username": "wilfred.alvarado",
+      "password": "Wilfred2026#",
+      "role": "colaborador",
+      "name": "Wilfred Alvarado",
+      "title": "Técnico de Soporte N1"
+    },
+    {
+      "id": "genry",
+      "username": "genry.luis",
+      "password": "Genry2026#",
+      "role": "colaborador",
+      "name": "Genry Luis",
+      "title": "Soporte Técnico de Software"
+    },
+    {
+      "id": "gerber",
+      "username": "gerber.vasquez",
+      "password": "Gerber2026#",
+      "role": "colaborador",
+      "name": "Gerber Vásquez",
+      "title": "Soporte Técnico PACS/RIS"
+    }
+  ]
+}

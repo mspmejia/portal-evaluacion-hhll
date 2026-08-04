@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal de Evaluación — Hospital Herrera Llerandi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ─────────────────────────────────────────────────────────────── */
+:root {
+  /* Brand */
+  --blue:        #1365de;
+  --blue-dark:   #0d4fb0;
+  --blue-deep:   #0a1f4e;
+  --blue-pale:   #e8f0fb;
+  --blue-faint:  #f3f7fe;
+
+  /* Surfaces */
+  --bg:          #f7f9ff;
+  --surface:     #ffffff;
+  --surface-alt: #f3f7fe;
+
+  /* Borders */
+  --border:      #dce6f5;
+  --border-strong: #b8ccee;
+
+  /* Text */
+  --text:        #0a1f4e;
+  --text-2:      #3d5a8a;
+  --text-3:      #7a96c2;
+  --text-inv:    #ffffff;
+
+  /* Semantic */
+  --green:       #1a7a4a;
+  --green-bg:    #eaf5f0;
+  --amber:       #8a5500;
+  --amber-bg:    #fdf3e0;
+  --red:         #c0392b;
+  --red-bg:      #fdecea;
+  --purple:      #5340b5;
+  --purple-bg:   #eeecfb;
+
+  /* Type scale */
+  --text-xs:     11px;
+  --text-sm:     12px;
+  --text-base:   14px;
+  --text-md:     15px;
+  --text-lg:     18px;
+  --text-xl:     24px;
+  --text-2xl:    30px;
+
+  /* Spacing */
+  --r:           8px;
+  --r-sm:        5px;
+  --r-lg:        12px;
+
+  /* Signature: 3px clinical accent top-border on result cards */
+  --accent-bar:  3px solid var(--blue);
+
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); font-size: var(--text-base); line-height: 1.5; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+button { font-family: var(--font); cursor: pointer; }
+input, textarea, select { font-family: var(--font); }
+
+/* ── LOGIN ──────────────────────────────────────────────────────────────── */
+.login-wrap {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(ellipse 800px 600px at 60% -10%, rgba(19,101,222,0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 400px 400px at 0% 100%, rgba(19,101,222,0.04) 0%, transparent 60%),
+    var(--bg);
+}
+.login-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 36px;
+}
+.login-logo img { height: 48px; width: auto; }
+.login-logo-tag {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.login-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: var(--accent-bar);
+  border-radius: var(--r-lg);
+  padding: 32px;
+  width: 100%;
+  max-width: 380px;
+}
+.login-title {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 4px;
+  letter-spacing: -0.3px;
+}
+.login-subtitle {
+  font-size: var(--text-sm);
+  color: var(--text-2);
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+.fg { margin-bottom: 14px; }
+.fg label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-2);
+  display: block;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.fg input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--blue-faint);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-size: var(--text-base);
+  color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.fg input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(19,101,222,0.1);
+}
+.btn-login {
+  width: 100%;
+  padding: 11px;
+  background: var(--blue);
+  border: none;
+  border-radius: var(--r-sm);
+  color: #fff;
+  font-size: var(--text-base);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: background 0.15s;
+  margin-top: 4px;
+}
+.btn-login:hover { background: var(--blue-dark); }
+.login-error {
+  background: var(--red-bg);
+  border: 1px solid rgba(192,57,43,0.2);
+  border-radius: var(--r-sm);
+  padding: 9px 12px;
+  font-size: var(--text-sm);
+  color: var(--red);
+  margin-bottom: 14px;
+  display: none;
+}
+.login-footer {
+  font-size: var(--text-xs);
+  color: var(--text-3);
+  text-align: center;
+  margin-top: 24px;
+}
+
+/* ── APP LAYOUT ─────────────────────────────────────────────────────────── */
+.app { display: none; }
+.app.visible { display: grid; grid-template-columns: 248px 1fr; height: 100vh; overflow: hidden; }
+
+/* ── SIDEBAR ────────────────────────────────────────────────────────────── */
+.sidebar {
+  background: var(--blue-deep);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.sidebar-logo {
+  padding: 18px 16px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+.sidebar-logo img { height: 28px; width: auto; filter: brightness(0) invert(1); display: block; }
+.sidebar-logo-sub {
+  font-size: var(--text-xs);
+  color: rgba(255,255,255,0.4);
+  margin-top: 5px;
+  letter-spacing: 0.04em;
+}
+.sidebar-user {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+.sidebar-user-name { font-size: var(--text-sm); font-weight: 700; color: #fff; }
+.sidebar-user-role { font-size: var(--text-xs); color: rgba(255,255,255,0.45); margin-top: 2px; }
+.sidebar-section {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 14px 16px 6px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: background 0.12s, color 0.12s;
+}
+.nav-item:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+.nav-item.active {
+  background: rgba(19,101,222,0.25);
+  color: #fff;
+  border-left-color: var(--blue);
+  font-weight: 600;
+}
+.nav-icon { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 20px;
+}
+.nav-badge.done { background: var(--green-bg); color: var(--green); }
+.nav-badge.pending { background: var(--amber-bg); color: var(--amber); }
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+.btn-logout {
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--r-sm);
+  color: rgba(255,255,255,0.5);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: all 0.15s;
+}
+.btn-logout:hover { border-color: rgba(255,100,100,0.5); color: #ffb3ae; }
+
+/* ── MAIN ───────────────────────────────────────────────────────────────── */
+.main { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.topbar-title { font-size: var(--text-md); font-weight: 800; letter-spacing: -0.2px; }
+.topbar-subtitle { font-size: var(--text-xs); color: var(--text-3); margin-top: 1px; }
+.topbar-actions { display: flex; gap: 8px; align-items: center; }
+
+/* ── BUTTONS ─────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: var(--r-sm);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-2);
+  transition: all 0.12s;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+.btn:hover { background: var(--blue-faint); color: var(--blue); border-color: var(--blue); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-primary { background: var(--blue); color: #fff; border-color: var(--blue); }
+.btn-primary:hover { background: var(--blue-dark); color: #fff; border-color: var(--blue-dark); }
+.btn-success { background: var(--green); color: #fff; border-color: var(--green); }
+.btn-success:hover { opacity: 0.88; }
+.btn-sm { padding: 5px 10px; font-size: var(--text-xs); }
+
+/* ── PAGES ── */
+.page { display: none; flex: 1; overflow-y: auto; padding: 24px; }
+.page.active { display: block; }
+
+/* ── DASHBOARD ───────────────────────────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: var(--accent-bar);
+  border-radius: var(--r);
+  padding: 18px 20px;
+}
+.stat-label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 10px;
+}
+.stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+}
+.stat-sub { font-size: var(--text-xs); color: var(--text-3); margin-top: 6px; }
+.cv-blue { color: var(--blue); }
+.cv-green { color: var(--green); }
+.cv-amber { color: var(--amber); }
+.cv-purple { color: var(--purple); }
+
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: var(--accent-bar);
+  border-radius: var(--r);
+  padding: 18px 20px;
+}
+.card-title {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 14px;
+}
+
+/* Team table */
+.team-table { width: 100%; border-collapse: collapse; }
+.team-table th {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--text-3);
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.team-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: var(--text-sm);
+  vertical-align: middle;
+}
+.team-table tr:last-child td { border-bottom: none; }
+.team-table tbody tr { transition: background 0.1s; }
+.team-table tbody tr:hover td { background: var(--blue-faint); }
+.person-cell { display: flex; align-items: center; gap: 10px; }
+.person-av {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800;
+  flex-shrink: 0;
+  letter-spacing: 0;
+}
+.person-name { font-size: var(--text-sm); font-weight: 700; }
+.person-role { font-size: 11px; color: var(--text-3); }
+.score-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.sp-s { background: var(--green-bg); color: var(--green); }
+.sp-c { background: var(--blue-pale); color: var(--blue); }
+.sp-e { background: var(--amber-bg); color: var(--amber); }
+.sp-n { background: var(--surface-alt); color: var(--text-3); }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+.dot-done { background: var(--green); }
+.dot-pending { background: var(--amber); }
+
+/* ── EVAL LAYOUT ────────────────────────────────────────────────────────── */
+.eval-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  height: calc(100vh - 56px);
+  overflow: hidden;
+}
+.eval-sidebar {
+  background: var(--surface-alt);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 10px 0;
+}
+.eval-person-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all 0.1s;
+}
+.eval-person-item:hover { background: var(--blue-pale); }
+.eval-person-item.active { background: var(--blue-pale); border-left-color: var(--blue); }
+.eval-person-item.done { border-left-color: var(--green); }
+.eval-person-name { font-size: var(--text-sm); font-weight: 700; }
+.eval-person-role { font-size: 11px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.eval-main { display: flex; flex-direction: column; overflow: hidden; }
+
+/* Chat topbar */
+.chat-topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 18px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.chat-topbar-name { font-size: var(--text-base); font-weight: 700; }
+.chat-topbar-role { font-size: var(--text-xs); color: var(--text-3); margin-top: 1px; }
+
+/* Tabs */
+.chat-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+  padding: 0 18px;
+}
+.chat-tab {
+  padding: 9px 14px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.12s;
+}
+.chat-tab:hover { color: var(--text-2); }
+.chat-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+.chat-panel { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+.chat-panel.active { display: flex; }
+
+/* Chat messages */
+.chat-area { flex: 1; overflow-y: auto; padding: 20px 18px; display: flex; flex-direction: column; gap: 14px; }
+.msg { display: flex; gap: 10px; align-items: flex-start; }
+.msg.user { flex-direction: row-reverse; }
+.msg-av {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800;
+  flex-shrink: 0;
+  background: var(--border);
+  color: var(--text-2);
+  border: 1px solid var(--border-strong);
+}
+.msg-av.ai { background: var(--blue); color: #fff; border-color: var(--blue); font-size: 9px; }
+.msg-bubble {
+  max-width: 72%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.75;
+}
+.msg.ai .msg-bubble {
+  background: var(--blue-faint);
+  border: 1px solid var(--border);
+  border-radius: 2px 12px 12px 12px;
+  color: var(--text);
+}
+.msg.user .msg-bubble {
+  background: var(--blue);
+  color: #fff;
+  border-radius: 12px 2px 12px 12px;
+}
+.msg-bubble strong { font-weight: 700; }
+
+/* Typing */
+.typing { display: flex; gap: 4px; align-items: center; padding: 10px 14px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-3); animation: bounce 1.2s infinite; }
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+/* Chat footer */
+.chat-footer {
+  border-top: 1px solid var(--border);
+  padding: 12px 18px;
+  background: var(--surface);
+  flex-shrink: 0;
+}
+.input-row { display: flex; gap: 8px; align-items: flex-end; }
+.input-row textarea {
+  flex: 1;
+  padding: 9px 12px;
+  background: var(--blue-faint);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font-size: 13px;
+  resize: none;
+  min-height: 40px;
+  max-height: 100px;
+  line-height: 1.5;
+  color: var(--text);
+  transition: border-color 0.15s;
+}
+.input-row textarea:focus { outline: none; border-color: var(--blue); }
+.send-btn {
+  width: 40px; height: 40px;
+  border-radius: var(--r-sm);
+  background: var(--blue);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.12s;
+}
+.send-btn:hover { background: var(--blue-dark); }
+.send-btn:disabled { background: var(--border-strong); cursor: not-allowed; }
+.chat-hint { font-size: 11px; color: var(--text-3); margin-top: 6px; }
+
+/* ── REPORT ──────────────────────────────────────────────────────────────── */
+.report-scroll { flex: 1; overflow-y: auto; padding: 20px 18px; }
+.report-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: var(--accent-bar);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+.report-section-title {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+.dim-row { display: flex; align-items: center; gap: 12px; margin-bottom: 9px; }
+.dim-label { font-size: var(--text-sm); color: var(--text-2); width: 185px; flex-shrink: 0; }
+.dim-bar-wrap { flex: 1; background: var(--blue-faint); border-radius: 3px; height: 6px; overflow: hidden; }
+.dim-bar { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.dim-score { font-size: var(--text-xs); font-weight: 700; width: 95px; text-align: right; flex-shrink: 0; }
+.tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+.tag-s { background: var(--green-bg); color: var(--green); }
+.tag-w { background: var(--amber-bg); color: var(--amber); }
+.tag-a { background: var(--blue-pale); color: var(--blue); }
+.tag-p { background: var(--purple-bg); color: var(--purple); }
+.suggestion-box {
+  background: var(--blue-pale);
+  border: 1px solid rgba(19,101,222,0.15);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  margin-top: 8px;
+}
+.suggestion-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--blue); text-transform: uppercase;
+  letter-spacing: 0.07em; margin-bottom: 6px;
+}
+.suggestion-text { font-size: var(--text-sm); color: var(--text); line-height: 1.65; }
+.report-name { font-size: var(--text-xl); font-weight: 800; letter-spacing: -0.4px; }
+.report-role { font-size: var(--text-sm); color: var(--text-2); margin-top: 3px; }
+
+/* Empty state */
+.empty-state {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 48px; gap: 10px;
+  color: var(--text-3);
+}
+.empty-state h3 { font-size: var(--text-md); font-weight: 700; color: var(--text-2); }
+.empty-state p { font-size: var(--text-sm); line-height: 1.65; max-width: 280px; color: var(--text-3); }
+
+/* Completion banner */
+.completion-bar {
+  background: var(--green-bg);
+  border-bottom: 1px solid rgba(26,122,74,0.15);
+  padding: 10px 18px;
+  display: none; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+.completion-bar.show { display: flex; }
+.completion-bar p { font-size: var(--text-sm); color: var(--green); font-weight: 700; flex: 1; }
+
+/* Clima */
+.clima-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.clima-item { background: var(--blue-faint); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px 14px; }
+.clima-q { font-size: var(--text-sm); color: var(--text-2); margin-bottom: 8px; line-height: 1.5; font-weight: 500; }
+.clima-dots { display: flex; gap: 4px; }
+.clima-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border-strong); }
+.clima-dot.filled { background: var(--blue); }
+
+/* Radar */
+.radar-wrap { display: flex; justify-content: center; }
+
+/* Spinner */
+.spinner { width: 13px; height: 13px; border: 2px solid currentColor; border-top-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+@keyframes spin {to{transform:rotate(360deg)}}
+
+/* Notification */
+.notif {
+  position: fixed; bottom: 24px; right: 24px;
+  padding: 12px 18px;
+  border-radius: var(--r);
+  font-size: var(--text-sm); font-weight: 600;
+  display: none; align-items: center; gap: 8px;
+  z-index: 999; max-width: 320px;
+  box-shadow: 0 4px 16px rgba(10,31,78,0.15);
+}
+.notif.show { display: flex; }
+.notif.success { background: var(--green); color: #fff; }
+.notif.error { background: var(--red); color: #fff; }
+.notif.info { background: var(--blue); color: #fff; }
+
+/* Collab hero */
+.collab-wrap { max-width: 680px; margin: 0 auto; }
+.collab-hero {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: var(--accent-bar);
+  border-radius: var(--r-lg);
+  padding: 24px;
+  margin-bottom: 18px;
+  display: flex; align-items: center; gap: 16px;
+}
+.collab-av {
+  width: 52px; height: 52px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; flex-shrink: 0;
+}
+.collab-info h2 { font-size: var(--text-lg); font-weight: 800; letter-spacing: -0.3px; }
+.collab-info p { font-size: var(--text-sm); color: var(--text-2); margin-top: 3px; }
+
+/* Eval sidebar eval items */
+.eval-person-check { color: var(--green); font-size: 13px; font-weight: 700; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-logo">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAABECAYAAAA7rQj2AAAQAElEQVR4Aey9CXwUx5U//qqqu2c0uoWEOIWQhDh9I1u+Ecb4iq/4SGwM6LZZZ9ebbDaJf9kkcrKbZOPN37ljhC7A2IlxfBsbGwwE28KOfJBgQOgW4pQYHYykmZ6uqv+rGUmMhAYQlnCczHz6dVVXvXrv1beqXr+uHo0onKPPuJzGhfF5zesS8pprEvKaDiXkN30cl9/0RFRebdo5MiGkJoRACIEvOAJj7rAS7tkSEZ/f9EfK6GZC4H4gkAaETAAgFzIg/65R9unEByu/AaFPCIEQAiEEToPA2DqsBVs0FjVpPQFybzA7GBBDiuifT8t755vBeELlIQRCCIQQUAiMqcOKnZGcz0nYjUpRMCISa4QdTJn4P+nZG2fhVegYIwRCYkMIfNERGEOHVURR+NdPC5DUQIABFg0zuIx7+LT8IYYQAiEE/mkRQJ8yNn1PWXrlFCAyHYg4pQJJLZDIIwig09IWnpI5VBlCIITAPzUCZ+2wEu55NiIm+4WYYOhphE9g8oSzUg7pJEJnZTE3CNYDFEyQlE8KJi9UHkIghMAIEPgHZR2xw0rOfidzUk7dW2bMhcfMsNmtESv27pyQv+3mofiYNKoLPdDQ4iHXFKhUBMDQt1Hp7RjC4LuMKWy4I6agcXNsYUNTTEHDltjCxvsBikZsu09Y6BRCIITAFxaBM170k259xTEl/72feNi4bRZjizSiGTZhaLowzuc04ZVpue//v0An0tgdVS+AOpFARVbDIUQFBWY5QLMiQOcG2C1RNYgP3zLGF3z6cwryT4yIhZgmMSIXUBDr4gqXvRaTvSd5EH/oIoRACIF/aATomfQuOrduvnvCnMpeOuE7JsPNcV8r6ouONHQ6IB20hyX+T3zB8j9F5X0a55O5fp4pgDzlywc9KRkagG/jXQMhHeX9rHFLNkQ55kxcbzHbNwjgE2N/RV9KAG4E3f5xdGFjfqCj7KsOJSEEQgj8AyLgcz1B+3XPs8b4gj2PMQbvEkLOD8rXV0GA3GGQyMqY7IYLVZG32/0jKaFF5VWUNRxxKnCzHcBL4cV9a196Q/FOWlqVxMKnbdMkvYNIVTI8ESpjJBWr4gq/8npyduXoRVvDqwuVhhAIIfA5I0CD6Z+c/cGFMbGXVXIS9n10VkYwvqHlBCBd19j2cflNy44/M7NNSvMm9DnNQ/nUtSACnZWFzsradNRzfDlGSmJc3v5LTSOx0oLwC5nQfFGc4g1GqgOChC12sUkfj89pKkQZqigYe6h8jBCYt3zz4sm5Tashu8E+RipCYkMInPyopd7+pWS/9xOuRVUy4BdTfNNH0eMEo6EY9kVREZKQ8nEFzb9t56zW6+q9RAL/lQTRBiCwiQDMCylFLYD1rx01NTfBuhldEQ/uvdtj9G7x2DyTJHo+ig4LTjYR/B98nMR6gsTwsVQDGUOpXJmQv/y12KW7kvw85+58yX0r42fkvF05I3tzdjCtabmbv5Oes3kzLCjC5+BgXGNfrsZ4Ts7W9Zcsfe07o6ZNGLM0rt+b0N39ufZt1PoTEvR3icCgaCTmoT0LRMwlHx/XJ32HE8OunNTZWk3A52n+JU5jG/Vwau8onv5IhymnWiBncy4uA1OmdqyqmNlenPIbpSP6wU+/SRh/hhDhIOgkfY+CRGCVIkyCHv4uCIKuUBGVN8ow+87oFbvP6d7WUTndcOopmU59+pRgpjq11NRjeuqlANcGYzkn5dERE5I66dQvH2cTMaodHZWCUuDEPxajI/FcSQnp+SIh0DfDiii+jfu+BOMtTlmahQvfwsknkMDnd/rYzqJnhMA1ALadMQWN34gBsB8vnr63qzTlg46K6Y1wz91abEHLl+LSUt/VgD1ut5gWZhpg9xpAiQmCmqhxeIelHicVYYQGKuVoqyQAFCxgxIwhxFoVt+LG1yc89Pq52dtyKIdpAacW2jz8IcCLtnqxchvS53fUll+zm8nOG0zovDPQivTc915Iz34H3/YGlp5ZHvcgwa1RaIXxZ9YgxBVC4CwQoLBgixabn1tu0cjHJOiaWvy4kQ1AlKNQBJ/5g04rDunnxCD7YwsbNiKtjCls+NO46MgmKukrhNBLqdSASAo6p8BQrT+6wwyc4qNsVIQs/REWZtFp+c+CRCzuJdM/npK/4wFVMtakHOapdGD3TlV9Tuuayy7e1FiRtTdQaQdNntOhzZwWWHameYGDZiIBHD3TJiG+EAIjRoBOTEl9zCboMsY1oLgXBAQjBOIGwAjHl4d+p0FBxS/9jmEgRfcgAgiZfIdyfIHkKwSIoEAWIxUyIF8GKieoiEgR+FYzBU5xf8vnhChQ3J9SOlXbfn3+a6xDfnR24CNkoNBnpzQw1LH7vt9FuAMoj4jxwPjVqdkfnPKPsFHEZz9Qt95nxnDCCHaCChtWDX4kVN9xS83e8tUZOVseT8vd+vPU7D9npy3ZEIWMg46ZX31p0tSCrd9Izt/+yznL3/lm2pItA4+fydmvJ0/P3bZMyUp7oOriuUvf/dF5y996Yk7Oc19Lzn52wiBBeDE5f+Pd8bl/m49ZmLWkCjfMdy+T0hvFpUwfn1u7bHr+28vSljzltwHfFicVbPpSUuFbP0F6YlrBpm9Mzt8woFvJ4OAFCR6VDVEIgTFDgHLK85WTEOgogKDrkX26CDoufLxSZX0lwySjUOTT41/lUjk+gv4GSTkw5YxGrAEdGWC0RtHZUWHgItLAInbqogkrRixrJA16HEBQtwA2PSFv3zURD+72kcr3E5PaBGVboNjUpe/O8yResPOYkbqu1Ui9sU1LWXRMn7ayPWxudUrujqv6eVOWbpnvjJyzp4OmfPcYS77CqSU91mtM3xmbv9f3dZM2fW5mmz5zdXdi5s87jOT3nSzl3mM05Zp2lvZ4t21G9bj8fV/ul6VSfJX3BFDHEpVvNybmeYn9MexAPDr++RazP9bOJjzWFjk3Lib745jouEsqO1nKS50k5ctIV3XSlB+52KydU/M2zlPt/SQw4UihI4TA2CFAXbbenh5bD3CmoirlpDQAjBTUnhA+nYGahmOn/lxIFqD+uNqrCdW5MVPogB50t6iCsFzBtG028BP6zW3AYBuhYhs6gy8JQgdsmFT4iqPHFv4nIB6Hh1qXd6xMOq+jOOkCi5oXATU73DTihUn3bYlXDdz6xP/kROsg1vEZx1dOzeiV7vPchucPXo/nsKrnEAFeYgeLmV/1aj23HKpYOftgeeolvZZtNoewvYLB2uSAn+9xeOygWyraAzhSvuq+o6VrUhlY9ZrwPu1cVZLasfLZ1I4nL2rsqHipS/fa1uoemtG5cu3szpWpGeAhcw1LN+3S9h9Kd4hCCJwrBChIeNyvTLkmJIwSAJeeLxLASMWX9zP4zlT6ki/ISYDATXBKuq1wfviX58RoKZ8kVneGw3sgI9pb40vt1tEMxnsyCPAXJTlhhYtOv82ijnQqPY/0PpnyQX+Na+WM3ZroycHIMN5yTM1W5W5mEwKIgzH7HIAi2lmWXn9s5cyHXWsv8G0acQYg0BkKKh/rLE56E3mEatdRMbuRWc4lmvQYusYfVGU+kjpo4PVl/bxFgqNn9TWCIkwUqeoi0VY25Rdt5ckfqZckMdkNMTqAm0jyARXkQsURohAC5woB2vO7Z5+094b/inF8SFAOilg+3VTYgQjcA8IQgaCT6idVqZxWP6nrQMJtGlw4gSWD8/37WgC4JnwE0C9bpTCaHyJQtse0QVvO/tIr/zyaoofKwidC7A1FV88PtJWdV7W/LKuqvuwWX7q/7KqqQ2UXVxFB2vz99rdm0rhE8jDT1tn1tr/kxPlIrbPKEuFON7Nfoko9Uv6EAO8BYNtjC/Kaogv3/ym2oOlLqs5PHCS+VdUs2OC/PnFuLb2iNkx279OFvLi/tBe3+hg4+y99qYBwMBnz5QNPvkfagvqN8dGOI5ouWkGXhyQzbxPEQimBnKF8CIGxRQCfT4rEsbKpj9i492EiaU+/Q2GCgoZEYOw+yukRdIZjpUGT7qPR3sO3HFp55Wn+pnGsLBgqV8MCgdR3CBte6FRoBo5DX9mghCFE6IKwrLsk5a/tZvNMLuAWIID9kfMoka8k5tTnYzXGRiZgf/Exr1cpUUWDiHCNMuGX5a/wgg7d/mzfWe1AeelgU6bnvXuNpGwzSBDo/ZdKr3Weya1UCXJQtNgnIpSEEBhTBAZm5+HS1N8xt/cii4g38M4p1G9ZaULgW7iz1y8BLCRcXPxqIcVXpJTmCWkCJOF/ltK6VoJ4BMsxesDzaB1Svqn1dFzSXHb1ptESeTo5FNe0wBgrGB+uePQ1YqBaSv19QixNhEXePFDYl0mcPvEaQ5oxDo/4S18RQMU2s6skeUN78dRHO+HoRZR0HRYav0fV27kJDgzAmN5zh7oOpMS8nfM8JDbNJLaBX8PAGxQYUrmoE5wM3GCxE/apGo+M/wrF52rey7/Stir11WMVM/d24uMolXQCkSdHY6pNiEIIjBUCAw5LKWhbk7qv53ezbgo3D1yvyc4/E2kJQZRjAZAYailSfIGEIYDPqanFqkiTAu/0AoiUn1DRc3VHcfLS9uLUdzpXpTxLCBnYp5Egu0zeemdrafqfW0vSfkWk+zLU9LagQkgqsL1fi0AHwAOtlHjhIwwkMPXrF4BO1kcSRAsTvctbS8tvOrAus8Uv5dycKfado73BtEmsUBhh4js6Ot95lcruvwqiP5GQ3XCj+k4c7ifR8Tm1V0imlzPS0xLWeWSNKp+St+vXCQX3/Rru2RWheKIBZglqReCY4GMmgCE46EKgXPGfsSs+vh/ueRYf14pobF7tPCIS/ihFWA+Oye+RwXdYjIKFY+q76DtJ2uvmRMxDHUY/mSQMo25mUJst3c9WRMflNi0TwC6VGNf5y9TZpk4h+gdB4O+1G7j6TzbtSMl1bx8sPe9aN/NeKQCeEoCPirgQMYVAAnQYDBepisQYLhYqON6gxVbGxVecNY0ZzpI5OwKlEwluvDP7HBzmj3aVXjGwiXKkdM6utpK113uF53oJnpep5CZB+RwfUdRjCkcn5peFJuNbTIEESBoGCQRMsLTufZz0PtJ2pG3m4bKZa3BRo+n+FufqLNABMEQomD7BJFahwXj2HevvNcO483bBRD3R5OsJqdP2J+Qt2y8Z3S6IdBOv85bGFy/qgK1ZFvJZuiAPxUaNPxBRuKJBsMj3LbC5OCc/UbI4Og+FiRSObzMr/LdxsRcdiC9Y2mCAsZNKbzzj3rv2VmQ1Kl5FPdQBPcZgJyOJ9SYw6wojIbopITrqQEJ4+BzOvL/2Mtns1eT26AebK2MezPmbpcNjWPacl4Q5lCxFgofhuCIA6iJEIQTGCAFc/cElO0tm7GgrSV4a1rF7aoy38c5Yq/mHsVbT03FW0yakd2J441ak5+N4/c+irbqvxHTXTTtcmpJ1uCzlWbXIgksOVlMkOkvmvt1WPPf2CHdNarR3/4PR1oHnI632ZoN7TSZNIwAAEABJREFUTBVNKafACQh0eF267P4ggrf8XwxvuPr4py/M7XryvF/BK/N7gkkfy3ImDjhjzPqbwnn908H0xHlrn4i2Gu6ErdsGnGljxeWNbfueujxa1F8fI2qfiJW1v43h9bdHeLdf0LIm86/9smoqrvl6pNl4WbSs/0EMbyiN5s3LY3v3zW4vTduleBj0ggSMOkXYq8Rrzo7kRx6NsRpKcdyWGx31Mw+umTbo0TjcOrQ0zGxcqdr2U7vz0+/GWfVLYnjN7yNkzaPQ/ZdajI6bmevTC9C+gmir/vVoq/HnsZ76i/AN6KPh8mBef9sI6+CL2PZ2aH3O3V8WSkMIjDYCp3RY/cpa1t/orKu45sXa8qt+UFt+9ZKa8quvR7q6pvyarL0VC+76dPXCb1evvv7Z6j8sPtjf5rOmtetubqlZfXXx/pLL7zpcfNE00n50HLHMyb3gmcZJZ6Kz7tNxh0tTL6tZfdV/7iu76R3YWmR9Vp2fpX1jRY67rmLRG81li+qDyaktX7S7vmwROo7+rwz0caLtNVheU774Z/vKFv+4pnzRq0peX+1AUr12cVVjWeYvWkozf9hSfP3TjRV3DvykdBh04WO0fzhbK+Ydbiq9qgT1/bB6zTVPNb6YNcDXL2xvxZ1b91XcP+hPcwAjviO/X/j00ZULf9hQel1J6/p7XYrfue7mruaSrKeaSxf8sKn02rLGiqwO1c/d5be9reoV7V57W3ND2XVvft7joGwZPSqiM3Pe/NasnDe+n56z4fsZOWVXjJ7skCSFwLz88gVTCt78fnLe24q+BVDkn8Sqchg6ZeUw/J9bUev6LFdb2ayD7uLU5uPFM9vOLoI7N+Z/HloM3ouPZKi5Byl0jA4CC66lnST1u5007bEOLe2x4zA55LBGB9kBKT1kclY3S3qsU5/yWLs29duAmA9UDpP53BzWuVZ8YfaqBen5r1en571VnZa3uTqpYFPAd5iGQWZI0fzc0v+Zmf9G9cz8TdXp+Vv2qG+pD2H5XC8ZavdtkWEaOvwIpOa/vXJ6/tbq6fnbq2dkV74PC4rwmdlfN6Kz1IATA7z07JqPSNc/GbMhTNCkhb0WSCcfM7Lf/nJ67lt/mZG36f0ZOZu+NOp+Q/3xrXqrdbLqwBJUixvqgSVjne8miRHtbFp6O01Nb2ep6U5IxrdtZ661myVOaNf87Y+xlPSD7dOxE2fefqw5HZ7GT6LEvm+P53VdY63riyL/GEmZdExLST+G493KZqQBDP6j8zPphwQKUv0FATILpNAx+gjgfjRoCC5uTQ8SHr+sLh3X3DPHtOnznSz5UqeeXDpqiy5tya+ipuRXvmZOmNWekD51/5SCHY/BaZ5HB1k35hcMGNfA4ACGRXEaGiPTKLSB9jZsP7LGY8/94TM5e/esXviz3fjoPPbavhgadKnsFMCpBYJ61cWISYANIysKQATOGVxVMOQTuvxsCAg7gLQDw/WlnFagMMFs53PKDE4pjiEFixDMBXJ8hjwzZv6bhybczIlueIk2wcXGf39a3qJ/GV4kDjxBGr5yjEptQAaiurPQLQzcI9KQ+s0L/VBdPxJ/r6n6Jox6s0wBx5uox46RW4pvpEHgXKVSOayRtw+1ODUCAt9sU3RW/rWJN4YAdoe3+RNNmm5Q61YRUDGYI4B5pFkmbOcxTkEjPUAU4QD30vgfTFq6PQn6PkqZb+BlX8E5TjiG9iYDMH2unI9Iu/pDFi8wcDMvmHRkbUekKMQ8agioqErt66nv6mnyLMcMIzMK6PDQKv8ZM6Fj1BBQPgGA4h4hYASFizNAcstTV9Q6pPMuhP9tH0m51M8fwHS2WZwOXSp0E6icojdUz/0mdcS77VNeiryvOv5s5Y5eOwaSICh42+VIAGjxCIQTqYPy9BwRs/ARYwRNQ6yfGwISVISl4X1ZpQDbRmyJxOgKcLX4G+Lg+zOh82ghgGNDJODapICjdZLUppLMDR2rkq9T1Fmc8uaojUCPQSpdGr5JkTHAZRSob10LdBCEkAttEfr22LzaeSdZ8wUq0Lnfwak+ge/xwverLl+gHoRMDSHw94cAxcfBkVhFR8J8Kt7unu7nAASuYhQpDfSW+AoYXwerNui3ZmlUex/TC9X150J+f3P2qtWdVpEc/k4QXHARTcg+OiH5qw3JU+55Ly4435nVJGdvsU9aWpUUWXiGUWvhKw77Q3uSo/I+PY3uIqpk2lc0pcBDteM/8wuTBUVaWP7OKQn3NEw4Zc8WbNEcuXsn2Vf8NQV8Np76i4OnlPV3U4lY3ncwPjpXYblzFLDcokF+yxT4WvOkU44LYglf82OpxvKUvGeC1ZKaqAnZDcmJSz/jfMA567O/8GASZDfgLvsJ5QLsoJ58fIHAieKgOfQuQetGVKG+DW2zegs06LEImEDQWfm8Jy5wvyDhABAnHg0Hyv215+KsQk/1aKDSkerzMoFNLKDYL6LebOBV8KOIzs5+/eYZOe++NCk7p51QccgT7m2AaEfr9Ny/7E/L2fbrGbmvpgRrn5az5YFJD27dOPHBbRuTc3f8UvFNyf745sn5Oze7tYROr8PRxKg8Elf4yWJVl5K7+aGUvK0bU3K3bUzN2fa4Kktbvu22SYXvbrPbJ7cLQzYYzNY6Z+mWq1RdIF1w/+ZLZy3fvnpK/m2HDEJaDW6ri5KOIwmFXz0yOf/DtSlL358fyB+Yn7H83Wtm5G7dOCPv9Y1z8p57QS2QlKVvzp+S//762Nl3t9u0yP1aRNih2Us+/vfAdsnZL8Qk57/z75MKqraPT4/vtBlwQCdGXaQRdiwmb0XrhJyD61OWVp1ka6CMM8vjLfLMGE/BdeZLZGrulvlJy+vKk5atOBDmgFaqkbooEnYk7qE7WqcVbl6Xlr0hM5iiy5Y8lTlv2TsbFc1avvUlQIc/ueDNCxMfrPpjXPqUY5HM2B9pOg7EFi79VqCMtCUbotKXffi1CdkHt8WmzemM5IYPS4PI1on5d7Qm523904y8164JbBOYPy/npf9Ny31n49zcDRvnZL/2kPpK0sT8DwujVlR/HBGlt3OdNBBDw7m2FOfE7lXJ2VuSA9sHy6sxnp63+ZsTCj/8S7RtSmeYZuwPo0ZTpE10Jhb89d20ZTseULp6tMhgInzlF2Q//RPsw0ZF0/O3/s+Zj4av+alPHatmvGzzdufoXLp1Dui0IOhHEpIyrqBmS+RDe781PndTSlDGv5MKN7WDxPmvHJ6iYGYlLn13fNSK+15rs0177bg27jZLI1FATeC4b+ahdupi46Z06pO/1qFN+9uUws2+37IaKquDJqd0sqTF7dq0xW3G1AXRBYd+6zISXutm0Qs9zG5Y+PJAmSKI4VZtnSx5hlNLXuzUpy/G9IqYgqbyY7bpL7noxGsE2A3la4mk1JSRPYpf0aRbqxzTlu1f1aFPr+xmictM4hgPeBOhIIBKAfhmLN5kYQ902SZWRhfs/181uVS7QHKR6fHHIW2xC2Ys7iDpiybk3fWNHn3Gux6YfLcUUREgMNJGQ70MAQB/y6T8LXcft82uPqYlP3GcTbjKpDZ1I8O5QpEwKid6HCeOu91syrb0ZR/+P3+rz/tM0QBF6qaF2aFH9hZ79EO7f3vcmPy+l9myOZUT1N6XwpIJChIccV108v1t9rR3Ix6se2I4LHvo1Lh2mrK4i6QsPk6mL45Jv/drLm3S+wKMexnwKE1YoAkBKM835sqE5Adq7/Bqc6u76eRfc+pAp6Q7VKBAJMXxAzCZEXdcG//lY1rqlrgH9zym2gylXjn5wi4cQydJW3yMpV6ZkJr8lkkSV0oZfqEEjeIbf/CoX/agJN7DjPwufdrH0/FGNVRO4LXt4T1fag9L39OlJz7uYfp8QrmhAdov0X5ghiCOK3q18WunJCdv5mCcMgLv0ifMd+pqbiejfdMuVqMQqOsz5w+Vz31Kd+uXa9L7gS5N3IIXg2QSCTgxkQCooGQBjsD/CiO2es7yrSvV3QLO0YcS8h+JBZ++kJq7/YXZ2ZuGpfTczS8k5/35hUkFVS90s/hFFtGASQsoGZgzg6xNXLpxvOmI2SZBv9ECO6jBltQNgPwS26pXuF5mgUezwK3pjuNa4srEwvdPclpMerrs3A124QZCeudJ1vsvQFVe4WmBesnpuyFw3gH4wUHs9OMqQBKZSYjMBhBAceKq//GocwPUL160GlE+/mRcYFpc7EvImy8JpULaQUq174i+Q+3PoX8R6BQttLlXp5qpk2+FzZ3oi9xQ3cDBqbeLoA4QEUB4XASR0Y+jwQagbsYRK0FBoKxuZvN9mTUp98N7PSThjwK08QR5lCDMA0esJBjAUSenAixFTFCXHv6j5LztNyq+syFJzqbVCNvc86wRaUv5kwT7vwBo1I2L241+V0lRNzYNMaACC4QdQNqpJm3/Pj5t6q9VfSC5DM1lYltJcNwItxtSewLbIpbIRSyg1AVAe3DtMB+WU5bWfVky+ieBzrEfM5VKoODDEvEUiCtIB7YxKCfsv6YWvH0bSht0EEG7qDCA8ihgwnE/A7mAqickQDtwbAXKkYD2E3UtAN/jxXjYuPVqrg8S1HcRvuLTB4gMe0FA2ASBbXVOweAWzmUXUg8YlgaG1w6qXBcEnSwpFKSv8bCJF4CYfsK5RGEMPgeeHv/Jkfq9V0aJpnt0efw9HAQhCAVFEo2TVGBegAIY7+RgUZt2XBtfyFn6uwnZDaf0uKNlLr4MmG+RsDuO08l3HNNShqV2Nv2OTm3KHS4Wf4eXhiVJnAxALCA4oJAw1JIiajqmrbZo+CyQGi4+QO7uT8JE89IIqJkZ2dswLcJ74EpduH5FhDQFTiYhYqglJz+RlPuXQREmlcLF8I7EpAmGEFRHJwnSY2ryeEU4P7Q0itffGW01fzusu+2gskJQ4aIgUB+gbf7v1lEp3DbeUxJrHl4SZ+6/M4Y3PWocP4B7jABdbNaPTGZb5GUCTCRB3c0OfvRf40TDeeF819Qw0XCJJnu+JyR0qPGR2GcG1r9Nzt+4EAI+lhAujjNIjSkHw7dQJIDQRferqDcv3ltz+zhrz8NRvMH3qxNUdL2JzrZKQyZ0sIIJ9/MO69g9EaJpdiSvQXxa8EbX/aQglpA4OS1KMSKNezRA5eeUFahXESZDjsTY6T8QlN2sRlvgCFiEtxA4/vUIs+WC6J7dU2O8tRdFWK3f1Tk4CToGgu1NahRG5TdiG7zoO4TgLp+jpmpt+AvVuNvlsTccsqUg1lt3+ziz9uFo0fiJqu0RrZskkTssJZC4RTQ/9PI4T8tXIt3NsyNd+6dFWgcvDxfHfoORGRpOffNCQNh3VdtBRAR6Qhw0dEoSDArYByZ7j2L7r8d4q8+L6K2eFi72X2fjve8xCej8KHiZfXy3I+UhGPKJeGj3PAnhK3WhaUSik0OiXPurw/LkhJsHZke6a6bFmC1Xh3HnbwDcbgtv3v3OCo0cIs1/STChINAqgX2QmGLBmBxbs/Eg214AABAASURBVKza8iufO1hy3pXS5HMFkEctqe1TugTBhYIzVy0YjhB5kVy6Bt02MY9qnnUARViiOMeOqPTLloRCMBJE8QhQTgrQgfhTdY0ErRD4mZOdudjO4UaG0YzAwRfEfLHV/Ojy5pJFT9WvumVf/drrm5vKr32vtfjiRzSv/IruNYRm2dXdJkLI+EcCZUlimAoTgbbZMRNmUqEJcVfrykty1K8m1JXe/GJN+eKfHXwmy/fjfV7qFco2dFIgcUiF75Zk3XqkZE5BU+lVTzeWZr3YWHLtT9UfkI/P3Z4iWM+/KezdOKdcNu8nLnbgkqbyC39TV3rlrgMlN7ccKr7uo9aVF/83DlOWLt1dhuzBHvVQS3N8L9BOTpllahZGjPjIy0wQ6NiIII8eLJt9a+2ai8uqV1/78p6KG35XveYmn8NSv/IQ3tN6i27xTYTz6zqK0+46XJLx3MHirL0Hi69vPlKSuaN91bQVBMxf+LqA8qigmen3vXJi7zPQgNPkJWJxGpYzrlYTUlFgg0lLtydZEP4NijcwTi3gxLtbUuclbSUzftGwJvOvteoXRyoWf9JUdtmP7W7X1cwyOqgUGKVY6IrJIOehUY43JJSBSlQ0LBFxjbt+sL8466am4htLastuerm2YtHvasuv+UjZ4FyX2dXR7b7VIuRNw9txQ2P53NsbVl/47MGKK/YeXHt184GSq3a0rMr41zDR9jMmBDah0Etj5ydkfzA4ICBuEMwNFjoPC3UL0NscpuvqAyWZv9hfmrXLL+uyt3n3/puopR1GQb5Dk/R2XybgFOaNeDzMazg0Tn0RlGaxisNdVkZj2SUVOPZ71RrYtzbzndo15/+rVz+UddzwOC0mcM4GCBmSZVwHIgwfUVxbaOIQjjG4PFYxc2978bSf4vp/VS1CgYMBQDsk0N0gKQicWAosL8abglkLZ+RfdMdom4GiB4mUIHdrwr3VIQ5tjbaah6UY3rQ1mjdvjRRHtxqy+zBBS5WtUtnfOjjEEjJshSYohtVInDhdJs+Dihz3IKV9F8dK57zIBH2VYt8lAXCTsLsD9zVQDE5+DQcSPYo0QBfe59tWnfdqX/OTEmWTwlFVKBsN6X762Kr0Tep6KIURmsNAGuqmgZgLD5Cc48V+xzeUt2NV+idE8t+oEQLssxeir0kIiIC9OoCgJqjHVYELlkr3rsMN9f/fUDmB1/vQyR4sm3l9R8n0rYHlgXnJxTP914imQe1Gev/155uKQep7HBOXcWrYFeY4J4QpWY7rSf9/MRrEiBfN6+btJmD9nKHD8uMpM5OzXz+xgW2aGEH4Fy/HG5UAsq+lzvNjbBr06Fo/19laOu2G5jUXDzvWqiHz8nW42oFIwNlrp14tdpYqHyAcN0mE75LgfARh/G/9mst8gYWvsO/kXHdzF5XkWRxsAOSjQNMAH4f7qmHWsk3pVGqLcF6DJrBWkk9au44/COvnmf08gemBkqwdqHeFmoeB5SflcYFQpQ+JIEL0JIYxLGC+r9lrAMIOzGtrdv/m6fOoyW7ROK1nfsxQOwUp7UsxM6aHlPJHGIFkNZVenoV3rWGprjQrq7FkYdaBlVdkOUTbBgoW+PaicM8n0Ljk7C12N4m5xiIaMGmBTVhVcdxIT8z/MDM5fwPSyzg5t2ROzt6RGZW/E6kmU4JVC8QNPTYXuOzuCTA7Jalfpm+EESMhHYCPDyDI8YEF3M8TmOo8DDjYQelXNtp5W1B+weMXG5YG6rGMIe5hpsMel9+A9u3MTMt+JzMt/+XMyflvZUat2JkZtqIhk1N6QKCzEiIKLIii3bpxab9u3QsYLbjxdmOCGj+H7HoetmZZ/fWnTotoXE7NnKScjwtn5LzzOL45XZ2c+/4LE/JqXjco/SXBu6qaJ4DSpSBnFWGdWv9nryWS3OCToh59rLAWzXJQfUWLb3yTs3dmzl7yTub5SLOX7MCxr8kk0HtUFwI0DqCDRYlOBrD0yQk8ERgRlunZW2adv+yN/FnLtzyOb27Lce/vhal5f3m9V48Z+Flsn3hGB329xYuWCHycV3MCCaN+hk7Jx3nSSRJSPVAowZ5mRNj7rwloiwjgROkrECB+HsxZ9bFA55N/eo4KWiuwoeyj/rpgKQ1WMRblVEJvv3FMYhwNRaJn5cwNlpddywTv0XCxC5ygbhoZ9FX6aNhF5cil2C03LkocBmyq+oDJwGHyhPEeFhkj0XYKAhexXGyjeiWBaHwDl1x5nKVXHjemVfYYEypBi6ykGqkkzPyGYG5QezWEWNTOzAGHJdiAaFBRp6Qe377FidLBOSoAlE1q0IkE4ejp3jWYo/+qiIJ0pGtCA4J3LFSTpgNFO8Mqu7WEyk4tubKdzqvsYamVIKMrdUkqqWS/pcivCKQGkonkfmmAHgsnnG9zXzlKXRz/cKAuaKaIRj1Y/0BMYd7fhBb+t16WsLKTJn+zi6Yu6yGT7xAQdiORcIXSBWr+o52436gFFfe5VRRRxDsdEBOFjSZJkk61SkMalZJFVnboEyvb7OmVrUZaZYeRVMmZrZJSudI/TgKttkAT3hNYYkngISTsDLwePl9EE/Oqvzo+//6dXVrip61G8iqnMfWbHSwp+zibeoebjrtRUNugr4cgtgNORslU9qgoR1C0BzrbDq79VYsqH47Qpwz7xKB4JSGzVapIquko5MCPO6qy4alIaNIdNNIerg0drnCsyghobkksEOqNF/UMqOktmdGCG4zNKjrhRIMuFo93gaJRt40ikv1CmRhQf0YZXeJw4QISOLAS7Q9s1GvER3G8SwE6LBwrrBLAKQV150L3gQtaA4rRlA4uCEfHF2ZZvmsKbjA4gMMLEOn2OrChOnykHAAF/76Q1Wv53gz5KoY5UdqLqt0AiC0VzGJcH55/wbUIAYmA/g+xgFIXUgcI5gKBj3cUIxvdMiDc9Ntl8xpA0GERsPBe3AMRVk+AnV7sI85/jAbVnhP2p6Nf9LApPkJMyVmy2s61tYKQOfiygAoyLOffWWH/rAkwawFQJnQHwb4TdFqE9CA+Xf7x5Saoay8zoVun0KsZ4CV28FIN3JoAj2aBGitJZTgE+RABp8ZywRZtwvJHSgWJfMZL7fN6WAztZhGox+/b1VpSj59ECjjVh+Ick9QNbsMF3GhBnUWnbhBcWNRAlZRWm+AD/69hoHyYjAbHDo9kDtBhZIxZkRTEjbMffEpxEfQrGpdXfymRpO9NGQW8+5v9dX8/KU4ESdEcAQSXKWYGjl7p6ZEBC4+DPGxSWSVob1UEP1I1ztuM1FA13qqrSjSbqqL4oSome6uItKoivO1YdxjL9uNk6RPJKeoAJIEnnNxwmo9gyIC8yi60scPtUhdYNuTYuk0Q2u22qAW4fwASZJcEq4rB8SqHbKqKFrX4KFtTleBtRJvw2nukShe9VUxAFT7GVDms7qpx1sGBjVcvLlEpDdSqgX/SndrW+Igrv8NJ2AOANip3role08GPvBwtmr4dyWvuC5f7b6e8+xYJIk8taEAnCbhyh/RiBJeIC+oaQYMzZ90KGASBWxMUIyUAJnmXLlw4joeqYnlD1Ti+ryoa9iCm9T5sHeJAlU04q5g0qzThwbKjVeHyyAE4y09ycsI3OdWzvcTA7QAcA0lMBp4NkaLt0Rhv45JYs/l2h3XgFiZ6Tru9osZOUgsY7Rp+3pyBjQSgZ4CNEC3SYztxYxyoODlDgcb0lxIMKPrzwVIarGIsytEeUxlF0FlJEQmxy5znT1x+8Ec2KTcDaIYADRepBVG8Yy++KTxr8Ia3nQ9ffIalXoJDgrwYogDgHRWzA4dba8UNebOHSIELl4KXsfc6iqdltBXPzGgouyxjb/nCjL1lt2TsKrs945M1N2VUl2dlHC6+BOvPz2jC+n3lV2XUld/wXr9AXYSBxg1cCBQXgoXFLqTghxAxvihOYasmX3DOIkFpW6N6s2dhd4Skh9uKn73scHFGxv7i6zPqSxb7bPt0zVUZu9Zem1G95rIM3CDPaCtJzmgtScvYX3pRxt6KrIp++cphoW/FPgNIiXtogNFWf+XQFCMCqcmH1ZtJLxNAJD9sWMcu2l92ye015Vf+rK4i6w8NZZe/fLhi5gZTiE8kRntqMx9ADJX0d3KNWEqJTwUCxwiACs15uOT5y2rLL0MMr82oLV2c0YSY7i/JzDhYcknG/rKLMg6Wnp/RVjwno7X4IqxbmLGzpKD4rDqDWLp02796dDd4MGrjhLTpojejfWXqLc0l839aU7Hw6erVC1+ur7h2g81qP+V2AqcG3rg00LkGdq8GZ/uRAHX9bQkAtYfz4Ptz/YyYemRcJiZnfNAz5hwFRkmEm2LPFElgF+uM7tSI+C8mZQRINAUdgc4B7NxVPgrqBongDKc+ASCCAlW6cKcJRvDhymjkZ9heQ4cLMB6v+o7i+T2M9HwkUb7qh5TkZnhoT9D9CV8rnHSJ+TuHHSyGDETZiKQhXnh5miMMALE7DZOvWgfXn30ZjHMJ0dPHFSwd9N0qf93gc0JuNe6DFOEADS5XVxbemTmSckK4l6+KhqWkFJ5EJYzHOQCKqORrDpdn7h6OmWo00+d4sf+AdsIIx2o4mf6ya/3JCM4E8ac45gTHnCENbir+rG5SigdtTJ6WfcuNg+tPvkp94OMr8GY8gGUgh8S+CipA9d3Cm3dgXWDenp4wyaOTSZL2gCYtIFI+1V6S4vvqSCCfygvNkQnSAPBhqUrU7FJpH1EvZgTKwB5gX/Ei6CGwRo2dshFwvgU+80khthIQ4IuMcatBSngYTvNJzG7JtGj4xYpNtVWk8oOIAEpV8TgFifNgWOAGNRili/G5+xYxQv6DIihqf4ZRF5XM5XueV987oQiA8vJUkA9qXEcH7uKjpB71AHAqfHdDTYUFMGTgTqOICsvHwXCPh3GcAL6rEydNdJUrsZJQIITZbcxWDoVVAfs9J3jVVxgmpCT9GmTE9uS8qsdgQZEWUIt2diP16cM73xnF1n0C6MDE7CsYkuicrzXQUOV0qaBYy34fn/vRJMwMeyQUfvRvXCfbEvNyVifcs2uQKTrgZMdIyKu5QZGF6bBCsNDeywzcvgEm8IIIXD9epRwvBh9KhwD9EfVrH5xgxCaQ1N1mMNuZXeGcGmA8DS4DfEMyFDFi6Kh0ywHUizeGwHpurZVqPWGZGvduI/r3cflbpuDlsMfEgk8e6rIlbJuUk/NM3JIdJ/Z8FLdhgIX7nl6coxYiw2H4qaNYAaH0MgtUBBom1L5or6946GnSrVWObkj6Opdq2CgwfAJgJhvC1gsEHR9nbtSPMofUDr208ObECa4lUFjgVnMfQ/XabR9pFq+ixA0EiRJ+8/jc6m/0VZ+UxOfunYQ3uNWcAvZagHp7agicT0M4FRYSHbkiAQRzMLafhHu2RCTk1ZVKamwEIs73aSMCgJh+AhxxQkHgHYVKq9ZhHr5H/bspGIOPQKDVpr9E0BXkI1Xhi6DQUgIWNj2KdOLPbv/vAAANoElEQVRg3PO0BLkXewYEZ7Eh6IIoErstOr9xIdyzCz0cRig4gcbltCxMSEnbLIjtIUl0XOJx3585/arfn5CkchhmqgQXHCcauEBNOFUQjHpBEHQCCkfsYzAuVb6n4uYdUpKXlY3qGjFJs/Sod6Pza+72O1i0M3uLPfrBvfNjH6z5IycRTzBJKZXkAVu4bSMA1quGPvLiBEIsiIWpALWX7Cse5oR1LQCiRzlUIjSQBO6fXLDlwkDWCV9tSJbRsS8RwtMlLlyFJcfpzBkLZDvjPCeKlQJBZ4X2O8alpv4gPq/psWAUV9DwmKLYwobvBPYTMQJli5IWSG3lMz4yRO/z/jILLKolWdrUd6MKqr+KY46DVkQxNaILd18cXdiwroeM/y3yaF5quzdMn/yWunH52+LZxCmC4y0JxYtTH25efdguuruYRNxxrgHQ+6MLa3yRSn/L2MKqpI5JU14wWdgcgaPDUa4iGHKj1gXHWrO/2SlT3xaAkoMmKpmDmYuEQQ98j0IPQmVhlQBBwx6PKWxaG55ff77CQWEak90QE1PQnG1pjvc5E+m+iA25AbANQfLlA0849gRFKgKJtgbWjXI+OXtLjBYTv5EQkktA+LpJJADBrEqZQPh8hDEXYW+6ZcfV9WuvboYx+Ngsf8c9eg94dXwjQs9skPpNEbjBbOEisrQe4JoLBn9tFKCxIssNXCzFzrmQwLAo2Lg+X6OwOTY2vDW2IHt/7MT4VqFbmy2NX6PukGqwGGcd1EuGOCwdKEZyFjqrHhQAp/6DdgC0h6NtHDQQZzCkFnhWSBCNyk5f/whNJhpbH0PiWmMeWrY/xp50hBDjL5pg94aZBg3zGKBxYYWLo0/gpBO+Nr6TF5gQYMNbpeHFSAg0X+lwp93rs1wWgT8wbgcNoxUOYZO6tfi/JOft+HhG9vuvTcmueV+E02rOehcC6wJCcA+X4h4NThKPfgrBwynrK+MqCsG8cpIUmJ0B/S9Mvx+MmGTf9xGn38ZmvkNQ4Yt2Lc0Egbb4CgNOujj8sMZ5LQMTlANhkiYxyp5JiJVHEgpv3Z8wrrvVoOaHFMj9VALuOLlxhNwWEfBLCPjOGror0DCaJjjuBOXbAPuP6bBH8a09ce7Op9SeEwc7mDR8vKC29+MKq3cm5f31tSl5f6sUJK6aUGuxYD1gqTnPAPe7DOCa+vObE1KZAGC4HhnqBhl8/PwtdPASO5IGkvViUeBDIW5iVVzxhkE6/w9wuKgE7KegDOQDOqUfx8REHFJrAHTAuSXKCQiMRAW6IBCSCjB1E5+COMocfODLHiAYGSqiwFHm4PpRvCqizrBJz5gkDJ/Zg4slwPcx0b2ktXTVTa0Vlw68gQre4kTNSHJqQNSEUG1wjFQyItJxMDWhgSCgQB62bVtZahWzjt9ABT+ooxKGQANghvAooNYkIJYDCfpJk93N4eLADXueuu4jCPgwwXyTSA26WjDHA+qGzwpQi1LVqVhVpaeitrJZB4l0XifB/ARw5YCk4COgDkwngWRR4CvT0A4DDO7pcsgD91WvufK5QLm67wInOWLjwxcdl68oyCmc1+GWgBv7qvQhljJc66HxF7rYuJtNTb9UUo6rCfvC5SYmoEv1Xzl1KWR8EJGnKeagIk81ZooUs1TjF4RUveJTpPIDhBgJaoGXnryg6tZeeTSy99B1hnB9RHG8JS5WkBoQIh0ayEmaYFFEYYlLTfUFiNdlcNfSljVTnx6Q35chxMRxxPkCijx9pcMn1O1+VLPIB8pWJZcJqkkIO7+XxN/cS8ZlEmnYGYohYG0l0vJ5FioBpLCGYImeDO3tnz/Da+svVQIFoLNBMvsLB6WNqzY/Gm4d+W9Neqz+CkIEJVTEARWTCJWGb84hpni8B8J6kiBuQo0JYtTfZiAlHPr50frhOGBUPtEr7s6XoOMmJE7O4SRKqOdc3HSwvnluS8VsHLwiMRzbaJVpnJqGpTuZN8pJeJhTx9fAI5FtN6nLbupOYkU5LRnmbHW7h7X3aPns97zSdZ6U3p9K8B6kGOoqJxJIBHgjEdZ/26yjF+xbc8UHQ+2weYnJJHcynGhhVm9bNPcMq6u/nWbpbmYxp24BtvH4Jmd/XbD0aNn59U5v0+VSyq9LSfeBbyqosTpBgtCjJiG/E6TzvKHOSsklglheaXd6we4UQJ1CdVZVBCGMQju83TXXmrTnx7h4jjK8AXCMIjmqpMQNjFtHDY/2XWe7vEXzRn/CLIeTceFklCcGEXnKYk2AiwM4Tcr7SDi9RGA+OGHo47SY6AgQ7CScOokQ2D/LHVA+kN29fn5z8/F9lyOGj3gJ3eulmqBWBGhWFGhefIOLeSxvMxkv9prWefsr5v1hoHFfxqu1CiCdOHa9TlzATk6s4T1CH3/tupu7xLHOLE26/luXrsO6QO2Ip0UtQOW4JwRthil/0OnsusHg8iObVzhtluW0QfcgLE1quLyEOUFKJwES2O8+TScSjbW7Dd7rNLjl1IA7melCrSfq/bki0VB+5ffsovNqKbRXuZSmxLkVSDhX6qUkX2/vcGXZhNWkc+7UvDanjdtO0u8lpEtI6vQR5nGq+NWM7rmIeiHi20RqKDZAhYRG6PtIgNrWirQ3AsPivqoxSXate2vTgYbaxLbapkTnvoOJR0uefnEkinY+vfHr+5v2YfuGxI59LRPhlflBY/au0rnOI2Wpjx7p+nh6nLvugjiz4dY4T91dsd7GG2K662c4q5+Z4Vw163tqAQ9nw/61Zc8qW4/W1aGt6ya2lN6IE3k4Tn9ZW1lZcUdNbaKzti7xSH3T1IOv3BrUNn+LvjM+xnYUp/6is7hsdlzvvplxnoZbkO5CuiXe3Df3WMd7Uw9XTHy4fu38YR/TO1bN+6R3T0Ni9946xKUisa78uoGvZvRpOClRf4DdWTLluzFmzbRos+6iKKv+9khRd2esd9/ldvHutEMVKT9Wf9JxuKw0S/W/o6YhsXHV1sdOEnQGBe3Fa5d01NQldiA2flL5usTOfcGoAesqEruqV88AKBJqbjpr6me01an+rUlsKN3+u6Bq199rthan/6r7yZK5Md6amdG86aZob8tdMVbzLbFm03ku53uTe34/7cGOitkDayBQVm35HbuP1v4xsWPfusTO6jWJnSWzTvtN8YM4B4+Upn2vtbNqWri1+6IoUXN7NOy7M1pUX64f+XhaW/nUHyos20rKb+ioKcP5UZZ4pGztdwP1Nq3a/kjX3pbEw3XPJO4tf+/KwLqh+bbiP/6hs9pvX3v1U1Nb19/rGsrTf11bkbmjtWzKrQ5X4+QYXpMVx+vvijNrb43xVM/urK6Y2VE8/RfKtqOlT//f0dpncJ4/k9i6r2WmwrxfhkobS7fe07mvwjcunStX3xfgTVT16FBM9u1JmhQpeBcFRUqqFPKnklt3SgKgCM8DIaOqH3sq8k1AHyC+vQO8HpFS5Fft+ulM2uIkrl5z019rym94tabipudryxa/WffUjbWwteg0fQ/UdTpeZUgg/5n+LZ9q109Fon7Non3qeztIzyNtqC1ftPuMXn7043HaPvXr8qeN6CyRPmkoW/hyXekNL+6puG1HY0XgH4sH9AmKBPibjfAcIGPATsTnlHnEO7AvA7xYfkZ2FImW0qza6oqsN3atXfj839Yu3LBnbdauM8MSdSjdikbSU5xnjRWLEctrX24sXvRiY8n1OwbftBQOfbJP6oOqU5hg/Ul1Q41QvMin7FM0tHqYa/WLImjP1vqShc/Xly96tbHihr2D53+gTLTjJBkB9WjfmDgsooVFKcFEClBEQfS0trb/SOq8RxC8QpJUnGbRnmR5qCCEQAiBf3IElF8ZdQi4DG+RklromgD3YXCDznLET7I/ZDEwORigyGJy1PWGBIYQCCHwj43AmDisrtKpTkN6NwncbLMY7sSiFk7h51KylapMqDcpPvrHBjfUuxACIQTOBoHgbdCVBK/8LDWG2/mIRXSnSzPApRtgUg3wbf1iv0wKXIRfNa6gbvP0vHdXpS1/E8uLxswWv87QOYRACIEvOgJj5iQOrLlsn8M6eC0Dz0cSIy2QBoB6a0gsxAyJyDhOwhZ2k4n53VrKxgm5y7akLN0+8JtQyBQ6QgiEEAghMAiBMXNYSsuR0oxdrt0tlzk85B7Nq28gXO8AYoL6JjMjXcCIC5hAE9CZCWJc49HHb0nO3jL4N6eVoBCFEAghEEIAEUBvgeexPPC1sLNk2nOdq6be0tXeOVUAuCVRO1meeia9u1VeEr8BXhKe0kunrfRfhc5nh0CoVQiBf1wExt5hDcbOtAgVAt8UMm58cLR47lw38WR5mVnlf6OIjoyI22blbDzln/MMFhm6CiEQQuCfBYFz7bDUbhZii2qF+hY8QEfJ7K3H2j+6ksnuNQACVMRlEvtSZAodIQRCCIQQGIQAeo5B12N+YQgLdIyxOA1Qvf5e88DxvxVwArtUebcWjW8Nx9yUkIIQAl90BP7p7A/wGuem70QCbrRjJAVssEJ0WhaFcvXX9QAyCRZs8Ydgg7lCVyEEQgj8EyNwbh3W+ucs3GD3/fKdJNKXBmLv7PGWUMHX2HnXL3x/8xdYGcqHEAgh8E+PwLl1WFAkJLfyMMgq9gjz8ZPQXzejq3XV7OVNpdf+50l1oYIQAiEE/ukR+P8BAAD//6CF5NMAAAAGSURBVAMA+2TF7cDtJPoAAAAASUVORK5CYII=" alt="Hospital Herrera Llerandi">
+    <span class="login-logo-tag">Portal de Evaluación · Departamento de TI</span>
+  </div>
+  <div class="login-card">
+    <div class="login-title">Iniciar sesión</div>
+    <div class="login-subtitle">Ingresa tus credenciales para acceder a tu evaluación.</div>
+    <div class="login-error" id="loginError">Usuario o contraseña incorrectos. Verifica tus datos.</div>
+    <div class="fg">
+      <label for="loginUser">Usuario</label>
+      <input type="text" id="loginUser" placeholder="usuario.apellido" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="fg">
+      <label for="loginPass">Contraseña</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-login" onclick="doLogin()">Ingresar</button>
+    <div class="login-footer">Hospital Herrera Llerandi · 2026 · Confidencial</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <img src="data:image/png;base64,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" alt="Hospital Herrera Llerandi">
+      <div class="sidebar-logo-sub">Evaluación de Talento TI · 2026</div>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-user-name" id="sidebarName">—</div>
+      <div class="sidebar-user-role" id="sidebarRole">—</div>
+    </div>
+    <div id="adminNav" onclick="showPage('mi-informe');renderMiInforme()">
+      <div class="sidebar-section">Administración</div>
+      <div class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard"><span class="nav-icon">📊</span> Dashboard</div>
+      <div class="nav-item" onclick="showPage('evaluaciones')" id="nav-evaluaciones"><span class="nav-icon">💬</span> Evaluaciones</div>
+      <div class="nav-item" onclick="showPage('reportes')" id="nav-reportes"><span class="nav-icon">📋</span> Reportes</div>
+      <div class="nav-item" onclick="showPage('clima')" id="nav-clima"><span class="nav-icon">🌡️</span> Clima Laboral</div>
+    </div>
+    <div id="collabNav" style="display:none">
+      <div class="sidebar-section">Mi espacio</div>
+      <div class="nav-item active" onclick="showPage('mi-eval')" id="nav-mi-eval"><span class="nav-icon">💬</span> Mi Evaluación</div>
+      <div class="nav-item" onclick="showPage('mi-informe');renderMiInforme()" id="nav-mi-informe"><span class="nav-icon">📄</span> Mi Informe</div>
+
+    </div>
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="doLogout()">← Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbarTitle">Dashboard</div>
+        <div class="topbar-subtitle" id="topbarSub">Resumen general del equipo</div>
+      </div>
+      <div class="topbar-actions" id="topbarActions"></div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid" id="statsGrid"></div>
+      <div class="charts-row">
+        <div class="chart-card"><div class="card-title">Distribución de calificaciones</div><canvas id="chartDist" height="180"></canvas></div>
+        <div class="chart-card"><div class="card-title">Promedio por dimensión — equipo</div><canvas id="chartDims" height="180"></canvas></div>
+      </div>
+      <div class="chart-card" style="margin-bottom:14px">
+        <div class="card-title">Estado del equipo</div>
+        <table class="team-table" id="teamTable"></table>
+      </div>
+    </div>
+
+    <!-- EVALUACIONES -->
+    <div class="page" id="page-evaluaciones" style="padding:0;overflow:hidden;">
+      <div class="eval-layout">
+        <div class="eval-sidebar" id="evalSidebar"></div>
+        <div class="eval-main" id="evalMain">
+          <div class="empty-state" id="evalEmpty">
+            <div style="font-size:40px">💬</div>
+            <h3>Selecciona un colaborador</h3>
+            <p>Elige a una persona del panel izquierdo para iniciar o continuar su evaluación.</p>
+          </div>
+          <div id="evalActive" style="display:none;flex-direction:column;height:100%;overflow:hidden;">
+            <div class="chat-topbar">
+              <div>
+                <div class="chat-topbar-name" id="evalPersonName"></div>
+                <div class="chat-topbar-role" id="evalPersonRole"></div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-sm" onclick="resetCurrentEval()">↺ Reiniciar</button>
+                <button class="btn btn-sm btn-success" id="btnViewReport" style="display:none" onclick="showPage('reportes');showPersonReport(currentPersonId)">📄 Ver informe</button>
+              </div>
+            </div>
+            <div class="completion-bar" id="completionBar">
+              <span>✅</span>
+              <p>Evaluación completada. El informe fue generado automáticamente.</p>
+              <button class="btn btn-sm btn-success" onclick="showPage('reportes');showPersonReport(currentPersonId)">Ver informe →</button>
+            </div>
+            <div class="chat-tabs">
+              <div class="chat-tab active" id="ctab-chat" onclick="switchChatTab('chat')">💬 Evaluación</div>
+              <div class="chat-tab" id="ctab-report" onclick="switchChatTab('report')">📊 Informe</div>
+            </div>
+            <div class="chat-panel active" id="cpanel-chat">
+              <div class="chat-area" id="chatArea"></div>
+              <div class="chat-footer" id="chatFooter" style="display:none">
+                <div class="input-row">
+                  <textarea id="userInput" placeholder="Escribe tu respuesta…" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+                  <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  </button>
+                </div>
+                <div class="chat-hint">Enter para enviar · Shift+Enter para nueva línea</div>
+              </div>
+            </div>
+            <div class="chat-panel" id="cpanel-report">
+              <div class="report-scroll" id="inlineReport"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTES -->
+    <div class="page" id="page-reportes"><div id="reportesContent"></div></div>
+
+    <!-- CLIMA -->
+    <div class="page" id="page-clima"><div id="climaContent"></div></div>
+
+    <!-- MI EVAL -->
+    <div class="page" id="page-mi-eval"><div class="collab-wrap" id="miEvalContent"></div></div>
+
+    <!-- MI INFORME -->
+    <div class="page" id="page-mi-informe"><div class="collab-wrap" id="miInformeContent"></div></div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+
+// ── CONFIG ─────────────────────────────────────────────────────────────────
+const API_KEY = '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';
+const USERS_FILE = 'users.json';
+
+// ── TEAM DATA ──────────────────────────────────────────────────────────────
+const team = [
+  { id:'oscar', name:'Oscar González', initials:'OG', role:'Coordinador de Soporte Técnico', color:'#d29922',
+    prompt:`Actúa como un evaluador de talento humano y técnico. Evalúas a Oscar González, Coordinador de Soporte Técnico N1 de un hospital. Lleva varios años en la institución. Coordina un equipo de dos técnicos de hardware. Su trabajo diario es gestionar la atención de fallas físicas de equipos de cómputo, impresoras y periféricos.
+
+Haz las preguntas de forma conversacional, una o dos a la vez. No menciones marcas, sistemas ni nombres de herramientas.
+
+D1 CONOCIMIENTOS TÉCNICOS DE HARDWARE
+Pregunta: ¿Qué tipos de fallas físicas son las más frecuentes que atiende tu equipo y cuáles son las que más te cuestan resolver?
+Pregunta: Cuando recibes un reporte de un equipo dañado, ¿cuál es tu proceso antes de asignarlo a uno de tus técnicos?
+
+D2 HABILIDADES PRÁCTICAS
+Escenario 1: Una impresora de urgencias falla en horario crítico y hay usuarios formados esperando. ¿Qué haces tú como coordinador mientras tu técnico la atiende?
+Escenario 2: Un equipo llega de proveedor con daño visible pero sin documentación de garantía. ¿Cómo lo manejas?
+
+D3 COORDINACIÓN DE EQUIPO
+Pregunta: ¿Cómo organizas el día de trabajo de tus dos técnicos? ¿Tienes algún criterio para asignar quién atiende qué tipo de falla?
+Pregunta: Cuando llegan varias fallas al mismo tiempo y solo tienes dos técnicos, ¿cómo priorizas sin que nadie quede desatendido?
+
+D4 ADAPTACIÓN AL CAMBIO, POTENCIAL Y ÁREA DE CRECIMIENTO
+Nota interna: estas preguntas deben sonar naturales. El objetivo real es detectar apertura al cambio y potencial de crecimiento, sin que el evaluado lo perciba como una trampa.
+Pregunta: ¿Cómo te ha ido adaptándote a los cambios que ha tenido el departamento en el último año?
+Pregunta: Cuando te piden hacer algo de una forma distinta a como siempre lo has hecho, ¿cómo lo vives?
+Pregunta: ¿Hay algún área de tecnología que te llame la atención fuera de lo que haces hoy, algo que hayas explorado por tu cuenta?
+Pregunta: Si pudieras elegir hacia dónde crecer dentro del departamento, ¿en qué dirección irías?
+
+D5 CLIMA LABORAL Y BIENESTAR
+Pregunta: ¿Cómo te sientes actualmente con tu rol y con la carga de trabajo que tienes?
+Pregunta: ¿Sientes que tu experiencia y tu trabajo son valorados en el departamento?
+Pregunta: ¿Qué cambiarías del ambiente o de la dinámica del equipo si pudieras?
+
+D6 AUTOEVALUACIÓN
+Pide que se califique del 1 al 10 en: conocimiento técnico de hardware, atención al usuario, coordinación del equipo, disposición a aprender cosas nuevas, manejo del tiempo.
+Pregunta: ¿En cuál de esas áreas crees que tu jefe te calificaría más bajo de lo que tú te das, y por qué?
+
+Al finalizar genera OBLIGATORIAMENTE JSON entre ===JSON_START=== y ===JSON_END===:
+{"fortalezas":["f1","f2","f3"],"mejoras":["m1","m2","m3"],"recomendacion":"texto de desarrollo profesional para el colaborador","sugerencias_admin":"Evalúa con honestidad: ¿mostró Oscar apertura real al cambio o señales de resistencia? ¿Tiene potencial de crecer a otra área o prefiere mantenerse donde está? ¿Es viable que se adapte al nuevo modelo del departamento? Recomendación directa para la administradora sobre cómo gestionar a Oscar en los próximos 6 meses.","temas_estudio":["t1","t2","t3","t4"],"clima":{"satisfaccion":3,"motivacion":3,"pertenencia":3,"carga":3,"balance":3},"auto360":{"tecnico":7,"servicio":7,"equipo":7,"liderazgo":7,"tiempo":7},"scores":{"conocimientos":"Competente","practico":"Competente","blando":"Competente","liderazgo":"Competente","clima":"Competente","auto360":"Competente"}}
+Scores solo pueden ser: Sobresaliente, Competente o En desarrollo. Comienza presentándote de forma cercana y pide a Oscar que se presente brevemente..`},
+
+  { id:'jorge', name:'Jorge Mario Pérez', initials:'JM', role:'Coordinador de Infraestructura y Seguridad', color:'#d29922',
+    prompt:`Actúa como un evaluador de talento humano y técnico. Evalúas a Jorge Mario Pérez, Coordinador de Infraestructura y Seguridad de un hospital. Lleva varios años en la institución. Su trabajo incluye administración de servidores, gestión de cuentas y accesos, mantenimiento de red interna y seguridad básica. Coordina a un técnico de redes.
+
+Haz las preguntas de forma conversacional, una o dos a la vez. No menciones marcas, sistemas específicos ni nombres de herramientas.
+
+D1 ADMINISTRACIÓN DE SERVIDORES
+Pregunta: ¿Cómo tienes organizada la administración de los servidores que están bajo tu responsabilidad — qué vigilas regularmente y cómo?
+Pregunta: Cuando un servidor crítico presenta problemas fuera del horario normal, ¿cuál es tu proceso y cómo decides si escalar o resolverlo tú mismo?
+
+D2 GESTIÓN DE USUARIOS Y ACCESOS
+Pregunta: ¿Cómo manejas el ciclo completo de un acceso — desde que alguien entra al hospital hasta que sale — para que los permisos estén siempre correctos?
+Pregunta: ¿Qué haces cuando descubres que alguien tiene accesos que ya no corresponden a su rol actual?
+
+D3 SEGURIDAD Y CONTINUIDAD
+Pregunta: ¿Cómo proteges la red ante posibles amenazas externas sin interrumpir la operación diaria del hospital?
+Escenario: Una sede remota pierde conectividad en horario clínico. ¿Cuál es tu protocolo y cómo coordinas la respuesta?
+
+D4 ADAPTACIÓN AL CAMBIO, POTENCIAL Y ÁREA DE CRECIMIENTO
+Nota interna: estas preguntas deben sonar naturales dentro de la conversación. El objetivo real es detectar resistencia al cambio en perfiles con mucha antigüedad, sin que el evaluado lo perciba como crítica.
+Pregunta: ¿Cómo has vivido los cambios que ha tenido el departamento en el último tiempo?
+Pregunta: Cuando se propone una forma nueva de hacer algo que llevas años haciendo de cierta manera, ¿cómo lo recibes?
+Pregunta: ¿Hay procesos o formas de trabajo que sientes que ya están algo desactualizados pero que sigues usando porque funcionan?
+Pregunta: ¿Hay alguna área de la tecnología que te llame la atención para crecer, más allá de lo que haces hoy?
+Pregunta: ¿Cómo te ves dentro del departamento en los próximos dos o tres años?
+
+D5 CLIMA LABORAL Y BIENESTAR
+Pregunta: ¿Cómo te sientes con tu rol actualmente y con el nivel de responsabilidad que tienes?
+Pregunta: ¿Sientes que tienes el soporte y los recursos que necesitas para hacer bien tu trabajo?
+Pregunta: ¿Qué mejorarías del ambiente o de la dinámica del equipo?
+
+D6 AUTOEVALUACIÓN
+Pide que se califique del 1 al 10 en: administración de servidores, gestión de accesos y usuarios, seguridad de red, disposición a cambiar procesos cuando es necesario, comunicación con el equipo.
+Pregunta: ¿En cuál de esas áreas crees que tu jefe te calificaría diferente a como tú te ves?
+
+Al finalizar genera OBLIGATORIAMENTE JSON entre ===JSON_START=== y ===JSON_END===:
+{"fortalezas":["f1","f2","f3"],"mejoras":["m1","m2","m3"],"recomendacion":"texto de desarrollo profesional para el colaborador","sugerencias_admin":"Evalúa con honestidad: ¿qué señales mostró Jorge Mario de apertura o resistencia al cambio? ¿Sus procesos actuales son compatibles con la transformación que viene? ¿Hay riesgo de que se convierta en obstáculo dado su antigüedad? Recomendación directa: retener, reubicar, desarrollar o tener plan de contingencia, con acciones concretas para los próximos 6 meses.","temas_estudio":["t1","t2","t3","t4"],"clima":{"satisfaccion":3,"motivacion":3,"pertenencia":3,"carga":3,"balance":3},"auto360":{"tecnico":7,"servicio":7,"equipo":7,"liderazgo":7,"tiempo":7},"scores":{"conocimientos":"Competente","practico":"Competente","blando":"Competente","liderazgo":"Competente","clima":"Competente","auto360":"Competente"}}
+Scores: Sobresaliente, Competente o En desarrollo. Comienza presentándote de forma profesional y pide que Jorge Mario se presente brevemente..`},
+
+  { id:'cristina', name:'Cristina Caal', initials:'CC', role:'Técnico Senior de Redes — Futura líder GPON', color:'#2f81f7',
+    prompt:`Actúa como un evaluador de talento humano y técnico. Evalúas a Cristina Caal, Técnico Senior de Redes e Infraestructura de un hospital. Es el perfil técnico más sólido del equipo, con certificaciones en redes y seguridad. Su trabajo incluye administración de red, segmentación de tráfico, fibra óptica y soporte de infraestructura crítica.
+
+Haz las preguntas de forma conversacional, una o dos a la vez. No menciones marcas, modelos ni nombres de herramientas específicas.
+
+D1 CONOCIMIENTOS TÉCNICOS DE INFRAESTRUCTURA
+Pregunta: ¿Qué aspectos de la infraestructura de red del hospital consideras que están mejor manejados actualmente, y en cuáles ves más oportunidad de mejora?
+Pregunta: Cuando hay que segmentar la red para separar distintos tipos de tráfico — por ejemplo, dispositivos médicos, usuarios administrativos y voz — ¿cómo lo abordas técnicamente?
+
+D2 HABILIDADES PRÁCTICAS
+Escenario 1: Te piden diseñar la infraestructura de red para un edificio nuevo del hospital desde cero. ¿Por dónde comienzas y qué defines primero?
+Escenario 2: Un componente de red falla y afecta el área de imagen médica 20 minutos antes de una lista de cirugías. ¿Cuál es tu protocolo de respuesta?
+
+D3 LIDERAZGO TÉCNICO Y COMUNICACIÓN
+Pregunta: Como referente técnico del equipo, ¿cómo compartes tu conocimiento con compañeros menos experimentados sin que se convierta en una carga adicional?
+Pregunta: Cuando necesitas explicar una decisión técnica compleja a alguien de gerencia que no es técnico, ¿cómo lo haces?
+
+D4 ADAPTACIÓN AL CAMBIO, POTENCIAL Y ÁREA DE CRECIMIENTO
+Nota interna: estas preguntas exploran liderazgo, crecimiento y ética técnica de forma natural.
+Pregunta: ¿Hay alguna área de la tecnología hacia la que quisieras crecer o especializarte más de lo que estás hoy?
+Pregunta: Si el departamento te diera la oportunidad de liderar un proyecto de infraestructura grande, ¿qué necesitarías para sentirte preparada?
+Pregunta: Cuando sabes que una decisión técnica que se está tomando no es la correcta, ¿cómo lo manejas?
+Escenario ético: Descubres una brecha de seguridad en la red y tiene relación con algo que hizo un compañero. ¿Qué haces?
+
+D5 CLIMA LABORAL Y BIENESTAR
+Pregunta: ¿Sientes que tu nivel técnico y tu experiencia son reconocidos apropiadamente dentro del departamento?
+Pregunta: ¿Qué te motivaría a quedarte y seguir creciendo aquí a largo plazo?
+Pregunta: ¿Cómo está tu equilibrio entre la carga de trabajo y tu vida personal?
+
+D6 AUTOEVALUACIÓN
+Pide que se califique del 1 al 10 en: conocimiento técnico de redes, resolución de problemas bajo presión, capacidad de liderar técnicamente, comunicación con no técnicos, disposición a asumir más responsabilidad.
+Pregunta: ¿En cuál de esas áreas crees que tu jefe te calificaría diferente a como tú te ves, y por qué?
+
+Al finalizar genera OBLIGATORIAMENTE JSON entre ===JSON_START=== y ===JSON_END===:
+{"fortalezas":["f1","f2","f3"],"mejoras":["m1","m2","m3"],"recomendacion":"texto de desarrollo profesional para el colaborador","sugerencias_admin":"Evalúa el potencial real de Cristina para asumir un rol de mayor liderazgo técnico. ¿Hay riesgo de perderla si no se le reconoce y proyecta? ¿Hacia qué área o rol debería crecer en los próximos 12 meses? Recomendación concreta de retención y desarrollo.","temas_estudio":["t1","t2","t3","t4"],"clima":{"satisfaccion":3,"motivacion":3,"pertenencia":3,"carga":3,"balance":3},"auto360":{"tecnico":7,"servicio":7,"equipo":7,"liderazgo":7,"tiempo":7},"scores":{"conocimientos":"Competente","practico":"Competente","blando":"Competente","liderazgo":"Competente","clima":"Competente","auto360":"Competente"}}
+Scores: Sobresaliente, Competente o En desarrollo. Comienza presentándote con respeto hacia su experiencia y pide que Cristina se presente..`},
+
+  { id:'silvia', name:'Silvia Ramos', initials:'SR', role:'Documentación, Procesos y Soporte de Software', color:'#2f81f7',
+    prompt:`Actúa como un evaluador de talento humano y técnico. Evalúas a Silvia Ramos de un hospital. Actualmente da soporte de software a usuarios: atiende problemas con aplicaciones, errores en sistemas internos y solicitudes de acceso. Su jefe quiere explorar si puede asumir adicionalmente la responsabilidad de documentar procesos y crear políticas del departamento de TI.
+
+Haz las preguntas de forma conversacional, una o dos a la vez. No menciones marcas ni nombres de sistemas.
+
+D1 SOPORTE DE SOFTWARE ACTUAL
+Pregunta: ¿Qué tipos de problemas de software son los más frecuentes que atiendes y cómo los resuelves habitualmente?
+Pregunta: Cuando un usuario reporta que un sistema no funciona pero tú no logras reproducir el error, ¿qué haces?
+
+D2 HABILIDADES PRÁCTICAS DE SOPORTE
+Escenario 1: Un usuario lleva días con un problema en una aplicación que ya fue reportado antes y nunca se resolvió del todo. ¿Cómo lo manejas?
+Escenario 2: Un usuario quiere que le instales un programa que no está autorizado por el departamento porque dice que "lo necesita para trabajar". ¿Cómo respondes?
+
+D3 DOCUMENTACIÓN Y CREACIÓN DE PROCESOS
+Pregunta: ¿Has documentado procesos o escrito manuales antes, aunque sea informalmente? ¿Cómo lo hiciste?
+Pregunta: Si tuvieras que documentar un proceso que nadie ha escrito antes y el único que lo conoce es un técnico con poco tiempo, ¿cómo lo harías?
+Pregunta: ¿Qué crees que hace que un manual o una política realmente sea útil y que la gente la siga?
+
+D4 ADAPTACIÓN AL CAMBIO, POTENCIAL Y ÁREA DE CRECIMIENTO
+Nota interna: explorar si tiene potencial para asumir el nuevo rol de documentación sin dejar el soporte, y hacia dónde quiere crecer.
+Pregunta: ¿Cómo te sientes ante la posibilidad de asumir la responsabilidad de documentar procesos y crear políticas, además de tu trabajo actual de soporte?
+Pregunta: ¿Hay alguna área de TI que te llame más la atención que lo que haces hoy?
+Pregunta: Si pudieras elegir en qué especializarte dentro del departamento, ¿qué elegirías y por qué?
+
+D5 CLIMA LABORAL Y BIENESTAR
+Pregunta: ¿Cómo te sientes con tu rol actual de soporte de software?
+Pregunta: ¿Sientes que tienes claridad sobre lo que se espera de ti en el departamento?
+Pregunta: ¿Qué cambiarías de tu trabajo diario si pudieras?
+
+D6 AUTOEVALUACIÓN
+Pide que se califique del 1 al 10 en: resolución de problemas de software, atención al usuario, redacción y documentación, organización, disposición a aprender cosas nuevas.
+Pregunta: ¿En cuál de esas áreas crees que tu jefe te calificaría diferente a como tú te ves?
+
+Al finalizar genera OBLIGATORIAMENTE JSON entre ===JSON_START=== y ===JSON_END===:
+{"fortalezas":["f1","f2","f3"],"mejoras":["m1","m2","m3"],"recomendacion":"texto de desarrollo profesional para el colaborador","sugerencias_admin":"Evalúa con honestidad dos cosas: 1) ¿Qué tan sólido es su soporte de software actual? 2) ¿Tiene el perfil real para asumir documentación y políticas — habilidad de redacción, organización, capacidad de extraer conocimiento técnico de otros? ¿Es viable el doble rol o conviene elegir uno? Recomendación directa con acción concreta.","temas_estudio":["t1","t2","t3","t4"],"clima":{"satisfaccion":3,"motivacion":3,"pertenencia":3,"carga":3,"balance":3},"auto360":{"tecnico":7,"servicio":7,"equipo":7,"liderazgo":7,"tiempo":7},"scores":{"conocimientos":"Competente","practico":"Competente","blando":"Competente","liderazgo":"Competente","clima":"Competente","auto360":"Competente"}}
+Scores: Sobresaliente, Competente o En desarrollo. Comienza presentándote con calidez y pide que Silvia se presente..`},
+
+  { id:'angel', name:'Ángel Cardona', initials:'AC', role:'Administrador de Software', color:'#2f81f7',
+    prompt:`Actúa como un evaluador de talento humano y técnico. Evalúas a Ángel Cardona de un hospital. Trabaja en el área de imagen médica y sistemas clínicos. Su jefe quiere evaluarlo para un rol de mayor responsabilidad como administrador de los sistemas de software del hospital. Actualmente está en una etapa inicial de su carrera y no tiene formación universitaria completa.
+
+Haz las preguntas de forma conversacional, una o dos a la vez. No menciones marcas ni nombres de sistemas específicos.
+
+D1 CONOCIMIENTOS DE SISTEMAS CLÍNICOS
+Pregunta: ¿Qué partes de los sistemas que usas en tu trabajo diario conoces mejor y en cuáles sientes que tienes más que aprender?
+Pregunta: ¿Cómo entiendes que se conectan entre sí los distintos sistemas del hospital — por ejemplo, el sistema de imagen médica, el de radiología y el sistema principal de información clínica?
+
+D2 HABILIDADES PRÁCTICAS
+Escenario 1: Detectas que una configuración en el sistema está generando cobros incorrectos en facturación. ¿Qué haces? ¿Cómo lo manejas sin causar más problemas?
+Escenario 2: Un proveedor externo pide acceso al servidor del sistema para hacer un mantenimiento. ¿Qué validas antes de darle acceso?
+
+D3 COMUNICACIÓN Y SERVICIO
+Pregunta: ¿Cómo comunicas a un área médica que necesitas hacer un cambio en el sistema que va a requerir dejarlo fuera de servicio por un tiempo?
+Pregunta: ¿Cómo documentas los cambios que haces en los sistemas para que otra persona pueda entender qué se hizo y por qué?
+
+D4 ADAPTACIÓN AL CAMBIO, POTENCIAL Y ÁREA DE CRECIMIENTO
+Nota interna: explorar si tiene claridad sobre lo que implica el nuevo rol y si tiene la disposición real de crecer.
+Pregunta: ¿Entiendes qué diferencia hay entre lo que haces hoy y lo que implicaría administrar los sistemas de software del hospital con mayor autonomía?
+Pregunta: ¿Cómo ves la necesidad de formarte más académicamente para consolidar ese crecimiento?
+Pregunta: ¿Hay alguna área de la tecnología que te llame más la atención o hacia la que quisieras especializarte?
+Escenario ético: Detectas que alguien tiene acceso a información de pacientes que no debería tener. ¿Qué haces?
+
+D5 CLIMA LABORAL Y BIENESTAR
+Pregunta: ¿Cómo te sientes con tu trabajo actual y con el ritmo de aprendizaje que tienes?
+Pregunta: ¿Sientes que tienes el apoyo que necesitas para seguir creciendo en el departamento?
+Pregunta: ¿Qué te motivaría a quedarte aquí a largo plazo?
+
+D6 AUTOEVALUACIÓN
+Pide que se califique del 1 al 10 en: conocimiento de los sistemas que administra, criterio para tomar decisiones técnicas, comunicación con usuarios clínicos, ética con datos de pacientes, disposición a estudiar y formarse.
+Pregunta: ¿En cuál de esas áreas crees que tu jefe te calificaría diferente a como tú te ves?
+
+Al finalizar genera OBLIGATORIAMENTE JSON entre ===JSON_START=== y ===JSON_END===:
+{"fortalezas":["f1","f2","f3"],"mejoras":["m1","m2","m3"],"recomendacion":"texto de desarrollo profesional para el colaborador","sugerencias_admin":"Plan de desarrollo concreto hacia Administrador de Software: ¿qué tan preparado está realmente para el rol?, ¿qué brechas críticas tiene?, ¿cuánto tiempo estimado necesita para estar listo?, ¿qué riesgo implica darle el rol antes de tiempo? Acción concreta recomendada.","temas_estudio":["t1","t2","t3","t4"],"clima":{"satisfaccion":3,"motivacion":3,"pertenencia":3,"carga":3,"balance":3},"auto360":{"tecnico":7,"servicio":7,"equipo":7,"liderazgo":7,"tiempo":7},"scores":{"conocimientos":"Competente","practico":"Competente","blando":"Competente","liderazgo":"Competente","clima":"Competente","auto360":"Competente"}}
+Scores: Sobresaliente, Competente o En desarrollo. Comienza presentándote con motivación y pide que Ángel se presente..`},
+
+  { id:'rudy', name:'Rudy Argueta', initials:'RA', role:'Administrador de Base de Datos', color:'#bc8cff',
+    prompt:`Actúa como un evaluador de talento humano y técnico. Evalúas a Rudy Argueta de un hospital. Tiene experiencia en logística y manejo de inventario físico. Su jefe quiere evaluarlo para determinar si tiene el perfil y la disposición para desarrollarse como administrador de bases de datos del hospital. Esta es una evaluación honesta desde donde parte.
+
+Haz las preguntas de forma conversacional, una o dos a la vez. No menciones marcas ni lenguajes específicos — usa términos funcionales.
+
+D1 CONOCIMIENTOS ACTUALES Y BASES TÉCNICAS
+Pregunta: ¿Has tenido algún contacto con bases de datos antes, aunque sea de forma básica o indirecta en algún trabajo anterior?
+Pregunta: En tus propias palabras, ¿qué crees que hace un administrador de bases de datos y qué tan diferente es de lo que haces hoy?
+
+D2 HABILIDADES PRÁCTICAS Y CRITERIO
+Escenario 1: Te informan que la base de datos del sistema principal del hospital tiene un problema y te piden que actúes. ¿Qué preguntas harías antes de tocar algo?
+Escenario 2: Descubres que alguien accedió a la base de datos con información de pacientes sin tener autorización para eso. ¿Qué haces?
+
+D3 COMUNICACIÓN Y TRABAJO EN EQUIPO
+Pregunta: Si estás aprendiendo un rol nuevo y cometes un error que afecta un sistema crítico, ¿cómo lo manejas — con tu jefe, con el equipo y con los afectados?
+Pregunta: ¿Cómo pedirías apoyo al equipo técnico que ya sabe más que tú sin que se convierta en una carga para ellos?
+
+D4 ADAPTACIÓN AL CAMBIO, POTENCIAL Y ÁREA DE CRECIMIENTO
+Nota interna: evaluar si tiene disposición real al aprendizaje técnico profundo y potencial de crecimiento en este rol.
+Pregunta: ¿Cómo te sientes ante la posibilidad de aprender algo tan técnico como la administración de bases de datos desde cero?
+Pregunta: ¿Qué tan dispuesto estás a estudiar formalmente — cursos, certificaciones o carrera — si el hospital te da esa oportunidad?
+Pregunta: ¿Hay alguna otra área de TI que te llame la atención además de las bases de datos?
+Pregunta: ¿Qué crees que tienes de tu experiencia anterior que puede servirte en este nuevo rol?
+
+D5 CLIMA LABORAL Y BIENESTAR
+Pregunta: ¿Cómo te sientes con tu trabajo actual y con la posibilidad de este cambio?
+Pregunta: ¿Qué te daría más confianza para asumir responsabilidades técnicas nuevas?
+Pregunta: ¿Cómo está tu equilibrio entre el trabajo y tu vida personal?
+
+D6 AUTOEVALUACIÓN
+Pide que se califique del 1 al 10 en: responsabilidad y cuidado con información sensible, capacidad de aprender cosas técnicas nuevas, trabajo en equipo, comunicación cuando hay problemas, compromiso con el trabajo.
+Pregunta: ¿En cuál de esas áreas crees que tu jefe te calificaría diferente a como tú te ves?
+
+Al finalizar genera OBLIGATORIAMENTE JSON entre ===JSON_START=== y ===JSON_END===:
+{"fortalezas":["f1","f2","f3"],"mejoras":["m1","m2","m3"],"recomendacion":"texto de desarrollo profesional para el colaborador","sugerencias_admin":"Evaluación honesta del potencial DBA de Rudy: ¿tiene la disposición y el perfil base para crecer en este rol técnico, o conviene reorientarlo a algo más acorde a su experiencia previa? Si tiene potencial, ¿qué plan de formación concreto necesita y en qué tiempo podría asumir responsabilidades reales? Si no, ¿qué alternativa dentro del departamento le quedaría mejor?","temas_estudio":["t1","t2","t3","t4"],"clima":{"satisfaccion":3,"motivacion":3,"pertenencia":3,"carga":3,"balance":3},"auto360":{"tecnico":7,"servicio":7,"equipo":7,"liderazgo":7,"tiempo":7},"scores":{"conocimientos":"Competente","practico":"Competente","blando":"Competente","liderazgo":"Competente","clima":"Competente","auto360":"Competente"}}
+Scores: Sobresaliente, Competente o En desarrollo. Comienza presentándote con apertura y pide que Rudy se presente..`},
+
+  { id:'wilfred', name:'Wilfred Alvarado', initials:'WA', role:'Técnico de Soporte N1', color:'#3fb950',
+    prompt:`Actúa como un evaluador de talento humano y técnico. Evalúas a Wilfred Alvarado, Técnico de Soporte N1 de un hospital. Su trabajo diario es atención de fallas de hardware: computadoras, impresoras, periféricos e instalación física de equipos. El objetivo de esta evaluación incluye identificar si tiene potencial para moverse a otra área del departamento.
+
+Haz las preguntas de forma conversacional, una o dos a la vez. No menciones marcas ni nombres de herramientas.
+
+D1 CONOCIMIENTOS DE HARDWARE
+Pregunta: ¿Qué tipos de fallas físicas son las más frecuentes que atiendes y cuáles son las que más trabajo te dan para resolver?
+Pregunta: ¿Cómo diferencias si un problema viene del equipo físico o si tiene otra causa — de red, de sistema u otra?
+
+D2 HABILIDADES PRÁCTICAS
+Escenario 1: Un equipo de un área importante falla y no hay repuesto disponible en ese momento. ¿Qué haces para no dejar al usuario sin solución?
+Escenario 2: Llegas a atender una falla y el equipo ya fue manipulado por alguien más antes de que llegaras — cables desconectados, cosas movidas. ¿Cómo procedes?
+
+D3 ATENCIÓN AL USUARIO Y TRABAJO EN EQUIPO
+Pregunta: ¿Cómo le explicas a un usuario que su equipo va a tardar en repararse cuando está ansioso o molesto?
+Pregunta: ¿Cómo te coordinas con tus compañeros cuando hay varias fallas al mismo tiempo y no alcanzan para todo?
+
+D4 ADAPTACIÓN AL CAMBIO, POTENCIAL Y ÁREA DE CRECIMIENTO
+Nota interna: explorar potencial real de movimiento de área de forma natural y sin presión.
+Pregunta: Fuera de tu trabajo diario de hardware, ¿hay alguna área de la tecnología que te llame la atención o que hayas explorado por tu cuenta?
+Pregunta: ¿Has resuelto alguna vez algo que iba más allá del hardware — un problema de conexión, de configuración, de red — aunque no fuera formalmente tu responsabilidad?
+Pregunta: Si pudieras elegir hacia qué área especializarte dentro del departamento, ¿cuál sería y por qué?
+Pregunta: ¿Qué estarías dispuesto a estudiar o aprender si el hospital te diera la oportunidad?
+
+D5 CLIMA LABORAL Y BIENESTAR
+Pregunta: ¿Cómo te sientes en tu trabajo actualmente?
+Pregunta: ¿Sientes que tienes espacio real para crecer dentro del departamento?
+Pregunta: ¿Qué te haría quedarte y desarrollarte a largo plazo en el hospital?
+
+D6 AUTOEVALUACIÓN
+Pide que se califique del 1 al 10 en: conocimiento de hardware, atención al usuario, capacidad de aprender cosas nuevas, iniciativa para resolver problemas, trabajo en equipo.
+Pregunta: ¿En qué área crees que tu jefe vería más oportunidad de mejora en ti, y en cuál crees que te subestimaría?
+
+Al finalizar genera OBLIGATORIAMENTE JSON entre ===JSON_START=== y ===JSON_END===:
+{"fortalezas":["f1","f2","f3"],"mejoras":["m1","m2","m3"],"recomendacion":"texto de desarrollo profesional para el colaborador","sugerencias_admin":"Evalúa el potencial real de movimiento de área de Wilfred: ¿hacia dónde apunta su perfil?, ¿en qué tiempo sería viable el cambio?, ¿qué necesitaría para lograrlo? ¿Hay riesgo de perderlo si no se le da oportunidad de crecer? Acción concreta recomendada para los próximos 6 meses.","temas_estudio":["t1","t2","t3","t4"],"clima":{"satisfaccion":3,"motivacion":3,"pertenencia":3,"carga":3,"balance":3},"auto360":{"tecnico":7,"servicio":7,"equipo":7,"liderazgo":7,"tiempo":7},"scores":{"conocimientos":"Competente","practico":"Competente","blando":"Competente","liderazgo":"Competente","clima":"Competente","auto360":"Competente"}}
+Scores: Sobresaliente, Competente o En desarrollo. Comienza presentándote de forma cercana y pide que Wilfred se presente..`},
+
+  { id:'genry', name:'Genry Luis', initials:'GL', role:'Soporte Técnico de Software', color:'#3fb950',
+    prompt:`Actúa como un evaluador de talento humano y técnico. Evalúas a Genry Luis, Técnico de Soporte N1 de un hospital. Su trabajo diario es atención de fallas de hardware. Es estudiante universitario de sistemas. El objetivo incluye evaluar su desempeño actual e identificar hacia dónde puede crecer dentro del departamento.
+
+Haz las preguntas de forma conversacional, una o dos a la vez. No menciones marcas ni nombres de herramientas.
+
+D1 CONOCIMIENTOS DE HARDWARE
+Pregunta: ¿Cómo arrancas el diagnóstico cuando un usuario te reporta una falla pero no sabe bien describirte qué pasó?
+Pregunta: ¿Cómo decides si un equipo tiene reparación o si es mejor reemplazarlo?
+
+D2 HABILIDADES PRÁCTICAS
+Escenario 1: Un usuario lleva días esperando que le resuelvan su equipo, ya está molesto y tú no tienes el repuesto todavía. ¿Cómo manejas la situación?
+Escenario 2: Llegas a atender lo que reportaron como una falla de hardware y al revisar te das cuenta de que el problema no es el equipo físico. ¿Qué haces?
+
+D3 ATENCIÓN AL USUARIO Y ACTITUD
+Pregunta: ¿Cómo manejas varios pedidos al mismo tiempo sin que ninguno quede mal atendido o sin respuesta?
+Pregunta: ¿Cómo equilibras el trabajo con tus estudios universitarios sin descuidar ninguno de los dos?
+
+D4 ADAPTACIÓN AL CAMBIO, POTENCIAL Y ÁREA DE CRECIMIENTO
+Nota interna: explorar hacia dónde apunta su perfil según su carrera y experiencia, sin presión.
+Pregunta: Estudiando sistemas, ¿hay algún área de la tecnología que te apasione más allá del hardware que haces hoy?
+Pregunta: ¿Has resuelto en el trabajo algo que iba más allá del hardware — configuración, red, software — aunque no fuera formalmente tu responsabilidad?
+Pregunta: Cuando termines tu carrera, ¿en qué área te gustaría especializarte?
+Pregunta: ¿Qué tan dispuesto estás a asumir responsabilidades nuevas ahora mismo, aunque implique más esfuerzo mientras estudias?
+
+D5 CLIMA LABORAL Y BIENESTAR
+Pregunta: ¿Cómo te sientes trabajando aquí mientras estudias — sientes que el ritmo es manejable?
+Pregunta: ¿Sientes que el departamento te da oportunidades reales de aprender y crecer?
+Pregunta: ¿Qué te haría quedarte a trabajar aquí al terminar tu carrera en lugar de buscar otro lugar?
+
+D6 AUTOEVALUACIÓN
+Pide que se califique del 1 al 10 en: conocimiento de hardware, atención al usuario, capacidad de aprender rápido, iniciativa para resolver cosas nuevas, compromiso con el trabajo.
+Pregunta: ¿En qué crees que tu jefe te subestimaría actualmente, y en qué crees que te sorprendería si te diera la oportunidad?
+
+Al finalizar genera OBLIGATORIAMENTE JSON entre ===JSON_START=== y ===JSON_END===:
+{"fortalezas":["f1","f2","f3"],"mejoras":["m1","m2","m3"],"recomendacion":"texto de desarrollo profesional para el colaborador","sugerencias_admin":"Evalúa el potencial de Genry para moverse de área: ¿hacia dónde apunta su perfil y su carrera universitaria?, ¿cuándo es el momento adecuado para moverlo?, ¿qué riesgo hay de perderlo si no se le da oportunidad de crecer? Acción concreta recomendada para los próximos 6 meses.","temas_estudio":["t1","t2","t3","t4"],"clima":{"satisfaccion":3,"motivacion":3,"pertenencia":3,"carga":3,"balance":3},"auto360":{"tecnico":7,"servicio":7,"equipo":7,"liderazgo":7,"tiempo":7},"scores":{"conocimientos":"Competente","practico":"Competente","blando":"Competente","liderazgo":"Competente","clima":"Competente","auto360":"Competente"}}
+Scores: Sobresaliente, Competente o En desarrollo. Comienza con entusiasmo y pide que Genry se presente..`},
+
+  { id:'gerber', name:'Gerber Vásquez', initials:'GV', role:'Soporte Técnico PACS/RIS', color:'#2f81f7',
+    prompt:`Actúa como un evaluador de talento humano y técnico. Evalúas a Gerber Vásquez de un hospital. Trabaja en el área de imagen médica dando soporte técnico a los sistemas de diagnóstico por imagen y a los radiólogos. Su jefe quiere evaluarlo para ver su nivel técnico actual y su potencial de crecimiento dentro del área.
+
+Haz las preguntas de forma conversacional, una o dos a la vez. No menciones marcas ni protocolos técnicos por nombre — usa lenguaje funcional.
+
+D1 CONOCIMIENTOS TÉCNICOS DE IMAGEN MÉDICA
+Pregunta: ¿Qué partes del trabajo con los sistemas de imagen médica dominas mejor y en cuáles sientes que tienes más que aprender?
+Pregunta: ¿Cómo entiendes el flujo completo desde que un médico pide un estudio de imagen hasta que el radiólogo lo lee y emite su informe — qué sistemas intervienen en ese proceso?
+
+D2 HABILIDADES PRÁCTICAS Y URGENCIA CLÍNICA
+Escenario 1: El sistema deja de recibir imágenes de sala de rayos 20 minutos antes de empezar una lista de cirugías. ¿Qué haces paso a paso?
+Escenario 2: Un médico te pide eliminar un estudio de imagen porque dice que fue tomado por error. ¿Cómo manejas esa solicitud?
+
+D3 SERVICIO CLÍNICO Y COMUNICACIÓN
+Pregunta: ¿Cómo te comunicas con un radiólogo cuando hay un problema técnico que no puedes resolver de inmediato y él tiene estudios pendientes?
+Pregunta: ¿Cómo documentas un incidente crítico en el área de imagen para que quede registro claro de qué pasó y cómo se resolvió?
+
+D4 ADAPTACIÓN AL CAMBIO, POTENCIAL Y ÁREA DE CRECIMIENTO
+Nota interna: explorar potencial de especialización y crecimiento de forma natural.
+Pregunta: ¿Hay algún aspecto de la tecnología médica que te llame especialmente la atención y que quisieras profundizar?
+Pregunta: ¿Has resuelto alguna vez algo que iba más allá de tu responsabilidad directa — algo de red, de configuración de sistema o de integración — aunque no fuera tu tarea formal?
+Pregunta: Si pudieras especializarte más dentro del área de imagen médica o en otra área de TI del hospital, ¿hacia dónde irías?
+Pregunta: ¿Qué estarías dispuesto a estudiar o certificarte si el hospital te diera la oportunidad?
+
+D5 CLIMA LABORAL Y BIENESTAR
+Pregunta: ¿Cómo te sientes trabajando en el área de imagen médica — te motiva el tipo de trabajo que haces?
+Pregunta: ¿Sientes que tienes oportunidades reales de crecer dentro del hospital?
+Pregunta: ¿Qué te haría quedarte a largo plazo en este departamento?
+
+D6 AUTOEVALUACIÓN
+Pide que se califique del 1 al 10 en: conocimiento técnico de los sistemas de imagen, criterio para actuar en urgencias clínicas, ética con información de pacientes, comunicación con el equipo médico, disposición a aprender y crecer.
+Pregunta: ¿En cuál de esas áreas crees que tu jefe te calificaría diferente a como tú te ves?
+
+Al finalizar genera OBLIGATORIAMENTE JSON entre ===JSON_START=== y ===JSON_END===:
+{"fortalezas":["f1","f2","f3"],"mejoras":["m1","m2","m3"],"recomendacion":"texto de desarrollo profesional para el colaborador","sugerencias_admin":"Evalúa el potencial de Gerber para especializarse en soporte técnico de imagen médica: ¿qué tan sólido es su perfil técnico-operativo?, ¿hacia dónde debería crecer?, ¿qué lo diferencia del perfil de Ángel Cardona en términos de rol y enfoque? Acción concreta recomendada.","temas_estudio":["t1","t2","t3","t4"],"clima":{"satisfaccion":3,"motivacion":3,"pertenencia":3,"carga":3,"balance":3},"auto360":{"tecnico":7,"servicio":7,"equipo":7,"liderazgo":7,"tiempo":7},"scores":{"conocimientos":"Competente","practico":"Competente","blando":"Competente","liderazgo":"Competente","clima":"Competente","auto360":"Competente"}}
+Scores: Sobresaliente, Competente o En desarrollo. Comienza presentándote y pide que Gerber se presente..`}
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let currentUser = null;
+let users = [];
+let evaluations = {}; // { personId: { messages, result, done } }
+let currentPersonId = null;
+let isLoading = false;
+const DIMS = ['conocimientos','practico','blando','liderazgo','clima','auto360'];
+const DIM_LABELS = ['Conocimientos técnicos','Habilidades prácticas','Competencias blandas','Liderazgo y ética','Clima laboral','Autoevaluación 360'];
+const SCORE_VAL = { 'Sobresaliente':3, 'Competente':2, 'En desarrollo':1 };
+
+// ── LOAD USERS ─────────────────────────────────────────────────────────────
+async function loadUsers() {
+  try {
+    const r = await fetch(USERS_FILE + '?v=' + Date.now());
+    const d = await r.json();
+    users = d.users;
+  } catch(e) {
+    // Fallback hardcoded
+    users = [
+      {id:'admin',username:'paola.mejia',password:'Admin2026#',role:'admin',name:'tu jefe Mejía',title:'Administradora de Sistemas'},
+      {id:'oscar',username:'oscar.gonzalez',password:'Oscar2026#',role:'colaborador',name:'Oscar González',title:'Coordinador de Soporte Técnico'},
+      {id:'jorge',username:'jorge.perez',password:'Jorge2026#',role:'colaborador',name:'Jorge Mario Pérez',title:'Coordinador de Infraestructura'},
+      {id:'cristina',username:'cristina.caal',password:'Cristina2026#',role:'colaborador',name:'Cristina Caal',title:'Técnico de Redes'},
+      {id:'silvia',username:'silvia.ramos',password:'Silvia2026#',role:'colaborador',name:'Silvia Ramos',title:'Documentación y Procesos'},
+      {id:'angel',username:'angel.cardona',password:'Angel2026#',role:'colaborador',name:'Ángel Cardona',title:'Administrador de Software'},
+      {id:'rudy',username:'rudy.argueta',password:'Rudy2026#',role:'colaborador',name:'Rudy Argueta',title:'Administrador de BD'},
+      {id:'wilfred',username:'wilfred.alvarado',password:'Wilfred2026#',role:'colaborador',name:'Wilfred Alvarado',title:'Técnico N1'},
+      {id:'genry',username:'genry.luis',password:'Genry2026#',role:'colaborador',name:'Genry Luis',title:'Soporte Software'},
+      {id:'gerber',username:'gerber.vasquez',password:'Gerber2026#',role:'colaborador',name:'Gerber Vásquez',title:'Soporte PACS/RIS'}
+    ];
+  }
+}
+
+// ── AUTH ───────────────────────────────────────────────────────────────────
+async function doLogin() {
+  if (!users.length) await loadUsers();
+  const u = document.getElementById('loginUser').value.trim().toLowerCase();
+  const p = document.getElementById('loginPass').value;
+  const found = users.find(x => x.username.toLowerCase() === u && x.password === p);
+  if (!found) {
+    document.getElementById('loginError').style.display = 'block';
+    return;
+  }
+  currentUser = found;
+  document.getElementById('loginError').style.display = 'none';
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('app').classList.add('visible');
+  document.getElementById('sidebarName').textContent = found.name;
+  document.getElementById('sidebarRole').textContent = found.title;
+  if (found.role === 'admin') {
+    document.getElementById('adminNav').style.display = 'block';
+    initAdminDashboard();
+  } else {
+    document.getElementById('collabNav').style.display = 'block';
+    initCollabView(found.id);
+  }
+}
+
+function doLogout() {
+  currentUser = null; currentPersonId = null;
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+}
+
+// ── NAVIGATION ─────────────────────────────────────────────────────────────
+function showPage(name) {
+  // Restrict colaborador to only their pages
+  if (currentUser?.role === 'colaborador' && !['mi-eval','mi-informe'].includes(name)) return;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  const navEl = document.getElementById('nav-' + name);
+  if (navEl) navEl.classList.add('active');
+  const titles = {
+    dashboard: ['Dashboard','Resumen general del equipo'],
+    evaluaciones: ['Evaluaciones','Sesiones de evaluación por colaborador'],
+    reportes: ['Reportes','Informes individuales y comparativos'],
+    clima: ['Clima Laboral','Análisis de bienestar y satisfacción del equipo'],
+    'mi-eval': ['Mi Evaluación','Sesión de evaluación con IA'],
+    'mi-informe': ['Mi Informe','Tu informe de evaluación']
+  };
+  if (titles[name]) {
+    document.getElementById('topbarTitle').textContent = titles[name][0];
+    document.getElementById('topbarSub').textContent = titles[name][1];
+  }
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'reportes') renderReportes();
+  if (name === 'clima') renderClima();
+}
+
+// ── ADMIN DASHBOARD ────────────────────────────────────────────────────────
+function initAdminDashboard() {
+  renderEvalSidebar();
+  renderDashboard();
+}
+
+function getPersonResult(id) { return evaluations[id]?.result || null; }
+function getScoreVal(scores, dim) { return scores ? (SCORE_VAL[scores[dim]] || 0) : 0; }
+function avgScore(result) {
+  if (!result?.scores) return 0;
+  const vals = DIMS.map(d => SCORE_VAL[result.scores[d]] || 0);
+  return vals.reduce((a,b)=>a+b,0)/vals.length;
+}
+
+function renderDashboard() {
+  const done = team.filter(p => evaluations[p.id]?.done).length;
+  const pending = team.length - done;
+  const scores = team.map(p => getPersonResult(p.id)).filter(Boolean);
+  const avgTeam = scores.length ? (scores.reduce((a,r)=>a+avgScore(r),0)/scores.length).toFixed(1) : '—';
+  const sob = scores.filter(r=>avgScore(r)>=2.5).length;
+  const enDes = scores.filter(r=>avgScore(r)<1.5).length;
+
+  document.getElementById('statsGrid').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Evaluaciones completadas</div><div class="stat-value stat-success">${done}</div><div class="stat-sub">de ${team.length} colaboradores</div></div>
+    <div class="stat-card"><div class="stat-label">Pendientes</div><div class="stat-value stat-warning">${pending}</div><div class="stat-sub">por completar</div></div>
+    <div class="stat-card"><div class="stat-label">Promedio del equipo</div><div class="stat-value stat-accent">${avgTeam}</div><div class="stat-sub">sobre 3.0 puntos</div></div>
+    <div class="stat-card"><div class="stat-label">Sobresalientes</div><div class="stat-value stat-purple">${sob}</div><div class="stat-sub">${enDes} en desarrollo</div></div>`;
+
+  // Team table
+  const tbody = document.getElementById('teamTable');
+  tbody.innerHTML = `<tr><th>Colaborador</th><th>Promedio</th><th>Conocimientos</th><th>Blandas</th><th>Clima</th><th>Estado</th><th></th></tr>`;
+  team.forEach(p => {
+    const r = getPersonResult(p.id);
+    const avg = r ? avgScore(r).toFixed(1) : '—';
+    const sc = (dim) => r?.scores?.[dim] ? `<span class="score-pill score-${r.scores[dim][0].toLowerCase()}">${r.scores[dim]}</span>` : '<span class="score-pill score-none">—</span>';
+    const done = evaluations[p.id]?.done;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><div class="person-cell"><div class="person-av" style="background:${p.color}22;color:${p.color}">${p.initials}</div><div><div class="person-name">${p.name}</div><div class="person-role">${p.role}</div></div></div></td>
+      <td><strong>${avg}</strong></td>
+      <td>${sc('conocimientos')}</td>
+      <td>${sc('blando')}</td>
+      <td>${sc('clima')}</td>
+      <td><span class="status-dot ${done?'dot-done':'dot-pending'}"></span>${done?'Completado':'Pendiente'}</td>
+      <td><button class="btn btn-sm" onclick="showPage('evaluaciones');selectPerson('${p.id}')">${done?'Ver informe':'Evaluar'}</button></td>`;
+    tbody.appendChild(tr);
+  });
+
+  // Charts
+  renderDistChart();
+  renderDimsChart();
+}
+
+function renderDistChart() {
+  const ctx = document.getElementById('chartDist');
+  if (!ctx) return;
+  if (ctx._chart) ctx._chart.destroy();
+  const scores = team.map(p => getPersonResult(p.id)).filter(Boolean);
+  const sob = scores.filter(r=>avgScore(r)>=2.5).length;
+  const comp = scores.filter(r=>avgScore(r)>=1.5&&avgScore(r)<2.5).length;
+  const enD = scores.filter(r=>avgScore(r)<1.5).length;
+  ctx._chart = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels:['Sobresaliente','Competente','En desarrollo','Sin evaluar'],
+      datasets:[{data:[sob,comp,enD,team.length-scores.length],backgroundColor:['#3fb950','#2f81f7','#d29922','#30363d'],borderWidth:0}]},
+    options:{plugins:{legend:{position:'bottom',labels:{color:'#8b949e',font:{size:11}}}},cutout:'65%'}});
+}
+
+function renderDimsChart() {
+  const ctx = document.getElementById('chartDims');
+  if (!ctx) return;
+  if (ctx._chart) ctx._chart.destroy();
+  const scores = team.map(p=>getPersonResult(p.id)).filter(Boolean);
+  if (!scores.length) return;
+  const avgs = DIMS.map(d => {
+    const vals = scores.map(r=>SCORE_VAL[r.scores?.[d]]||0).filter(v=>v>0);
+    return vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2) : 0;
+  });
+  ctx._chart = new Chart(ctx, {
+    type:'bar',
+    data:{ labels: DIM_LABELS.map(l=>l.length>14?l.substring(0,14)+'…':l),
+      datasets:[{data:avgs,backgroundColor:'#2f81f7',borderRadius:4}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{min:0,max:3,ticks:{color:'#8b949e',stepSize:1},grid:{color:'#21262d'}},x:{ticks:{color:'#8b949e',font:{size:10}},grid:{display:false}}}}});
+}
+
+// ── EVAL SIDEBAR ───────────────────────────────────────────────────────────
+function renderEvalSidebar() {
+  const sb = document.getElementById('evalSidebar');
+  if (!sb) return;
+  sb.innerHTML = team.map(p => `
+    <div class="eval-person-item ${evaluations[p.id]?.done?'done':''}" id="epi-${p.id}" onclick="selectPerson('${p.id}')">
+      <div class="person-av" style="background:${p.color}22;color:${p.color};width:28px;height:28px;font-size:10px">${p.initials}</div>
+      <div style="min-width:0">
+        <div class="eval-person-name">${p.name}</div>
+        <div class="eval-person-role">${p.role}</div>
+      </div>
+      ${evaluations[p.id]?.done?'<span style="color:var(--success);font-size:12px">✓</span>':''}
+    </div>`).join('');
+}
+
+function selectPerson(id) {
+  currentPersonId = id;
+  const person = team.find(p=>p.id===id);
+  if (!person) return;
+  document.querySelectorAll('.eval-person-item').forEach(el=>el.classList.remove('active'));
+  const el = document.getElementById('epi-'+id);
+  if (el) el.classList.add('active');
+  document.getElementById('evalEmpty').style.display = 'none';
+  const ea = document.getElementById('evalActive');
+  ea.style.display = 'flex';
+  ea.style.flexDirection = 'column';
+  document.getElementById('evalPersonName').textContent = person.name;
+  document.getElementById('evalPersonRole').textContent = person.role;
+
+  const ev = evaluations[id];
+  if (ev?.done) {
+    document.getElementById('completionBar').classList.add('show');
+    document.getElementById('btnViewReport').style.display = 'inline-flex';
+    document.getElementById('chatFooter').style.display = 'none';
+    renderInlineReport(id);
+  } else {
+    document.getElementById('completionBar').classList.remove('show');
+    document.getElementById('btnViewReport').style.display = 'none';
+  }
+
+  const chatArea = document.getElementById('chatArea');
+  if (ev?.messages?.length) {
+    chatArea.innerHTML = '';
+    ev.messages.forEach(m => addMsgToUI(m.role === 'assistant' ? 'ai' : 'user', m.content, person.initials));
+  } else {
+    chatArea.innerHTML = `
+      <div class="empty-state">
+        <div style="font-size:36px">🤖</div>
+        <h3>Evaluador listo</h3>
+        <p>Inicia la sesión de evaluación con <strong>${person.name}</strong>.</p>
+        <button class="btn btn-primary" onclick="startEval()" style="margin-top:8px">▶ Iniciar evaluación</button>
+      </div>`;
+    document.getElementById('chatFooter').style.display = 'none';
+  }
+  switchChatTab('chat');
+}
+
+// ── CHAT ───────────────────────────────────────────────────────────────────
+function switchChatTab(tab) {
+  ['chat','report'].forEach(t=>{
+    document.getElementById('ctab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('cpanel-'+t).classList.toggle('active',t===tab);
+  });
+  if (tab==='report') renderInlineReport(currentPersonId);
+}
+
+async function startEval() {
+  if (!currentPersonId) return;
+  if (!evaluations[currentPersonId]) evaluations[currentPersonId] = { messages:[], done:false, result:null };
+  document.getElementById('chatArea').innerHTML = '';
+  document.getElementById('chatFooter').style.display = 'block';
+  await callClaude(null);
+}
+
+function addMsgToUI(role, text, initials) {
+  const area = document.getElementById('chatArea');
+  const cleanText = text.replace(/===JSON_START===[\s\S]*?===JSON_END===/g,'').trim();
+  if (!cleanText) return;
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  const av = document.createElement('div');
+  av.className = `msg-av${role==='ai'?' ai':''}`;
+  av.textContent = role==='ai'?'IA':(initials||'U');
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+  bubble.innerHTML = cleanText.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  div.appendChild(av); div.appendChild(bubble);
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+
+function showTyping() {
+  const area = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.id='typing'; div.className='msg ai';
+  div.innerHTML=`<div class="msg-av ai">IA</div><div class="msg-bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+  area.appendChild(div); area.scrollTop=area.scrollHeight;
+}
+function hideTyping(){const e=document.getElementById('typing');if(e)e.remove();}
+
+async function callClaude(userText) {
+  if (isLoading || !currentPersonId) return;
+  const person = team.find(p=>p.id===currentPersonId);
+  if (!person) return;
+  const ev = evaluations[currentPersonId];
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  if (userText) {
+    ev.messages.push({role:'user',content:userText});
+    addMsgToUI('user', userText, person.initials);
+  }
+  showTyping();
+
+  const apiMsgs = userText ? ev.messages : [{role:'user',content:'Comienza la evaluación ahora.'}];
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:person.prompt,messages:apiMsgs})
+    });
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'Error API');}
+    const data = await res.json();
+    const reply = data.content[0].text;
+    hideTyping();
+    addMsgToUI('ai', reply, person.initials);
+    ev.messages.push({role:'assistant',content:reply});
+
+    if (reply.includes('===JSON_START===')) {
+      parseResult(currentPersonId, reply);
+    }
+  } catch(err) {
+    hideTyping();
+    addMsgToUI('ai', `⚠️ ${err.message}`, person.initials);
+  }
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+  if (!ev.done) document.getElementById('userInput')?.focus();
+}
+
+function parseResult(id, text) {
+  try {
+    const js = text.match(/===JSON_START===([\s\S]*?)===JSON_END===/)?.[1]?.trim();
+    if (!js) return;
+    const data = JSON.parse(js);
+    evaluations[id].result = data;
+    evaluations[id].done = true;
+    document.getElementById('completionBar').classList.add('show');
+    document.getElementById('btnViewReport').style.display = 'inline-flex';
+    document.getElementById('chatFooter').style.display = 'none';
+    const epi = document.getElementById('epi-'+id);
+    if (epi) { epi.classList.add('done'); epi.querySelector('.eval-person-name').insertAdjacentHTML('afterend',''); }
+    renderEvalSidebar();
+    renderInlineReport(id);
+    showNotif('✓ Evaluación completada. Informe generado.','success');
+    renderDashboard();
+  } catch(e){ console.warn('Parse error',e); }
+}
+
+async function sendMessage() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text||isLoading||evaluations[currentPersonId]?.done) return;
+  input.value=''; input.style.height='auto';
+  await callClaude(text);
+}
+
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
+
+function resetCurrentEval() {
+  if (!confirm('¿Reiniciar la evaluación? Se perderá el historial.')) return;
+  if (currentPersonId) { delete evaluations[currentPersonId]; selectPerson(currentPersonId); }
+}
+
+// ── REPORT RENDERING ────────────────────────────────────────────────────────
+function scoreColor(s){return s==='Sobresaliente'?'#3fb950':s==='Competente'?'#2f81f7':'#d29922';}
+function scoreColorLight(s){return s==='Sobresaliente'?'var(--success-bg)':s==='Competente'?'var(--accent-bg)':'var(--warning-bg)';}
+function scorePct(s){return s==='Sobresaliente'?100:s==='Competente'?66:s==='En desarrollo'?33:0;}
+
+function renderInlineReport(id) {
+  const container = document.getElementById('inlineReport');
+  const r = evaluations[id]?.result;
+  const person = team.find(p=>p.id===id);
+  if (!r || !person) { container.innerHTML = '<div class="empty-state"><h3>Sin informe aún</h3><p>Completa la evaluación para generar el informe.</p></div>'; return; }
+
+  const isAdmin = currentUser?.role === 'admin';
+  const dims = DIMS.map((d,i)=>({key:d,label:DIM_LABELS[i],score:r.scores?.[d]||'—'}));
+
+  // Radar SVG
+  const cx=120,cy=120,rad=90;
+  const angles = DIMS.map((_,i)=>((i*60)-90)*Math.PI/180);
+  function rpt(i,val){const a=angles[i];const rv=(val/3)*rad;return{x:cx+rv*Math.cos(a),y:cy+rv*Math.sin(a)};}
+  function gpt(i,f){const a=angles[i];return{x:cx+f*rad*Math.cos(a),y:cy+f*rad*Math.sin(a)};}
+  const gridSVG = [1,2,3].map(v=>{const pts=DIMS.map((_,i)=>gpt(i,v/3));return`<polygon points="${pts.map(p=>`${p.x},${p.y}`).join(' ')}" fill="none" stroke="var(--border)" stroke-width="0.5"/>`}).join('');
+  const axesSVG = DIMS.map((_,i)=>{const p=gpt(i,1);return`<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="var(--border)" stroke-width="0.5"/>`;}).join('');
+  const vals = DIMS.map(d=>SCORE_VAL[r.scores?.[d]]||0);
+  const radarPts = vals.map((v,i)=>rpt(i,v));
+  const radarPath = radarPts.map((p,i)=>`${i===0?'M':'L'}${p.x},${p.y}`).join(' ')+'Z';
+  const lblOffset=[[0,-14],[14,0],[14,14],[0,14],[-14,14],[-14,0]];
+  const lblSVG = DIM_LABELS.map((l,i)=>{const p=gpt(i,1.28);const[ox,oy]=lblOffset[i];return`<text x="${p.x+ox}" y="${p.y+oy}" text-anchor="middle" font-size="8" fill="var(--text2)" font-family="sans-serif">${l.split(' ')[0]}</text>`;}).join('');
+
+  container.innerHTML = `
+    <div class="report-header">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+        <div class="person-av" style="width:48px;height:48px;font-size:16px;background:${person.color}22;color:${person.color}">${person.initials}</div>
+        <div><div class="report-name">${person.name}</div><div class="report-role">${person.role}</div></div>
+      </div>
+    </div>
+
+    <div class="report-section">
+      <div class="report-section-title">Resultados por dimensión</div>
+      <div style="display:grid;grid-template-columns:240px 1fr;gap:20px;align-items:center">
+        <div class="radar-wrap">
+          <svg viewBox="0 0 240 240" style="width:200px">${gridSVG}${axesSVG}
+            <path d="${radarPath}" fill="${person.color}" fill-opacity="0.15" stroke="${person.color}" stroke-width="1.5"/>
+            ${radarPts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="3" fill="${person.color}"/>`).join('')}
+            ${lblSVG}
+          </svg>
+        </div>
+        <div>${dims.map(d=>`
+          <div class="dim-row">
+            <div class="dim-label">${d.label}</div>
+            <div class="dim-bar-wrap"><div class="dim-bar" style="width:${scorePct(d.score)}%;background:${scoreColor(d.score)}"></div></div>
+            <div class="dim-score" style="color:${scoreColor(d.score)}">${d.score}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    ${r.fortalezas?.length?`<div class="report-section">
+      <div class="report-section-title">Fortalezas identificadas</div>
+      <div class="tag-list">${r.fortalezas.map(f=>`<span class="tag tag-success">✓ ${f}</span>`).join('')}</div>
+    </div>`:''}
+
+    ${r.mejoras?.length?`<div class="report-section">
+      <div class="report-section-title">Áreas de mejora</div>
+      <div class="tag-list">${r.mejoras.map(m=>`<span class="tag tag-warning">↑ ${m}</span>`).join('')}</div>
+    </div>`:''}
+
+    ${r.recomendacion?`<div class="report-section">
+      <div class="report-section-title">Recomendación de desarrollo</div>
+      <p style="font-size:13px;color:var(--text);line-height:1.7">${r.recomendacion}</p>
+    </div>`:''}
+
+    ${r.temas_estudio?.length?`<div class="report-section">
+      <div class="report-section-title">Plan de estudio sugerido</div>
+      <div class="tag-list">${r.temas_estudio.map(t=>`<span class="tag tag-accent">📚 ${t}</span>`).join('')}</div>
+    </div>`:''}
+
+    ${isAdmin && r.sugerencias_admin?`<div class="report-section" style="border-color:rgba(47,129,247,0.3)">
+      <div class="report-section-title" style="color:var(--accent)">⚙ Sugerencias estratégicas (solo admin)</div>
+      <div class="suggestion-box">
+        <div class="suggestion-text">${r.sugerencias_admin}</div>
+      </div>
+    </div>`:''}
+
+    ${r.clima?`<div class="report-section">
+      <div class="report-section-title">Clima laboral declarado</div>
+      <div class="clima-grid">${Object.entries(r.clima).map(([k,v])=>`
+        <div class="clima-item">
+          <div class="clima-q">${{satisfaccion:'Satisfacción general',motivacion:'Motivación',pertenencia:'Sentido de pertenencia',carga:'Carga de trabajo (inverso)',balance:'Equilibrio vida-trabajo'}[k]||k}</div>
+          <div class="clima-score-row"><div class="clima-dots">${[1,2,3,4,5].map(i=>`<div class="clima-dot${i<=v?' filled':''}"></div>`).join('')}</div><span style="font-size:11px;color:var(--text2);margin-left:6px">${v}/5</span></div>
+        </div>`).join('')}
+      </div>
+    </div>`:''}
+
+    ${r.auto360?`<div class="report-section">
+      <div class="report-section-title">Autoevaluación 360</div>
+      ${Object.entries(r.auto360).map(([k,v])=>`
+        <div class="dim-row">
+          <div class="dim-label">${{tecnico:'Conocimiento técnico',servicio:'Servicio al cliente',equipo:'Trabajo en equipo',liderazgo:'Liderazgo',tiempo:'Gestión del tiempo'}[k]||k}</div>
+          <div class="dim-bar-wrap"><div class="dim-bar" style="width:${(v/10)*100}%;background:var(--purple)"></div></div>
+          <div class="dim-score" style="color:var(--purple)">${v}/10</div>
+        </div>`).join('')}
+    </div>`:''}
+
+    <div style="display:flex;gap:10px;margin-top:8px;padding-bottom:24px">
+      <button class="btn btn-primary" onclick="exportPersonPDF('${id}')">⬇ Exportar PDF</button>
+    </div>`;
+}
+
+// ── REPORTES PAGE ──────────────────────────────────────────────────────────
+function renderReportes() {
+  const c = document.getElementById('reportesContent');
+  const done = team.filter(p=>evaluations[p.id]?.done);
+  if (!done.length) { c.innerHTML = '<div class="empty-state" style="padding:60px;text-align:center"><h3>Sin evaluaciones completadas</h3><p>Completa al menos una evaluación para ver los informes.</p></div>'; return; }
+  c.innerHTML = `
+    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+      ${done.map(p=>`<button class="btn ${currentPersonId===p.id?'btn-primary':''}" onclick="showPersonReport('${p.id}')">${p.name}</button>`).join('')}
+    </div>
+    <div id="reportPersonDetail"></div>`;
+  if (done.length) showPersonReport(done[0].id);
+}
+
+function showPersonReport(id) {
+  currentPersonId = id;
+  const c = document.getElementById('reportPersonDetail');
+  if (!c) return;
+  const tmp = document.createElement('div');
+  tmp.id = 'inlineReport';
+  c.innerHTML = '';
+  c.appendChild(tmp);
+  renderInlineReport(id);
+}
+
+// ── CLIMA PAGE ─────────────────────────────────────────────────────────────
+function renderClima() {
+  const c = document.getElementById('climaContent');
+  const results = team.map(p=>({p,r:getPersonResult(p.id)})).filter(({r})=>r?.clima);
+  if (!results.length) { c.innerHTML='<div style="padding:40px;text-align:center;color:var(--text2)">Sin datos de clima aún. Completa evaluaciones primero.</div>'; return; }
+
+  const dims = ['satisfaccion','motivacion','pertenencia','carga','balance'];
+  const labels = ['Satisfacción','Motivación','Pertenencia','Carga de trabajo','Balance vida-trabajo'];
+  const avgs = dims.map(d=>{const vals=results.map(({r})=>r.clima[d]||0);return(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);});
+
+  c.innerHTML = `
+    <div class="charts-row" style="margin-bottom:20px">
+      <div class="chart-card">
+        <div class="card-title">Clima promedio del equipo</div>
+        <canvas id="climaChart" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="card-title">Autoevaluación 360 promedio</div>
+        <canvas id="auto360Chart" height="200"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="card-title">Clima individual por colaborador</div>
+      <table class="team-table">
+        <tr><th>Colaborador</th>${labels.map(l=>`<th>${l}</th>`).join('')}</tr>
+        ${results.map(({p,r})=>`<tr>
+          <td><div class="person-cell"><div class="person-av" style="background:${p.color}22;color:${p.color};width:26px;height:26px;font-size:10px">${p.initials}</div>${p.name}</div></td>
+          ${dims.map(d=>`<td style="color:${r.clima[d]>=4?'var(--success)':r.clima[d]<=2?'var(--danger)':'var(--text)'}">${r.clima[d]}/5</td>`).join('')}
+        </tr>`).join('')}
+      </table>
+    </div>`;
+
+  setTimeout(()=>{
+    const cc=document.getElementById('climaChart');
+    if(cc){if(cc._c)cc._c.destroy();cc._c=new Chart(cc,{type:'radar',data:{labels,datasets:[{label:'Promedio equipo',data:avgs,backgroundColor:'rgba(47,129,247,0.1)',borderColor:'#2f81f7',borderWidth:1.5,pointBackgroundColor:'#2f81f7'}]},options:{scales:{r:{min:0,max:5,ticks:{display:false},grid:{color:'var(--border)'},pointLabels:{color:'var(--text2)',font:{size:10}}}},plugins:{legend:{display:false}}}});}
+    const ac=document.getElementById('auto360Chart');
+    if(ac&&results[0]?.r?.auto360){
+      const a360labels=['Técnico','Servicio','Equipo','Liderazgo','Tiempo'];
+      const a360avgs=Object.keys(results[0].r.auto360).map(k=>{const vals=results.map(({r})=>r.auto360?.[k]||0);return(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);});
+      if(ac._c)ac._c.destroy();
+      ac._c=new Chart(ac,{type:'bar',data:{labels:a360labels,datasets:[{data:a360avgs,backgroundColor:'var(--purple)',borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{min:0,max:10,ticks:{color:'var(--text2)'},grid:{color:'var(--border)'}},x:{ticks:{color:'var(--text2)'},grid:{display:false}}}}});
+    }
+  },100);
+}
+
+// ── COLABORADOR VIEW ────────────────────────────────────────────────────────
+function initCollabView(userId) {
+  const person = team.find(p=>p.id===userId);
+  if (!person) { showPage('mi-eval'); return; }
+  if (!evaluations[userId]) evaluations[userId]={messages:[],done:false,result:null};
+
+  // Mi Eval page
+  const me = document.getElementById('miEvalContent');
+  me.innerHTML = `
+    <div class="collab-hero">
+      <div class="collab-av" style="background:${person.color}22;color:${person.color}">${person.initials}</div>
+      <div class="collab-info">
+        <h2>${person.name}</h2>
+        <p>${person.role}</p>
+      </div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden">
+      <div class="chat-area" id="miChatArea" style="min-height:300px;max-height:500px"></div>
+      <div id="miChatFooter" style="border-top:1px solid var(--border);padding:12px 18px;display:none">
+        <div class="input-row">
+          <textarea id="miUserInput" placeholder="Escribe tu respuesta..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMiMessage()}" oninput="autoResize(this)"></textarea>
+          <button class="send-btn" id="miSendBtn" onclick="sendMiMessage()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <div class="chat-hint">Enter para enviar · Shift+Enter para nueva línea</div>
+      </div>
+    </div>`;
+
+  const ca = document.getElementById('miChatArea');
+  if (evaluations[userId].messages.length) {
+    evaluations[userId].messages.forEach(m=>addMiMsg(m.role==='assistant'?'ai':'user',m.content,person.initials));
+    if (evaluations[userId].done) {
+      ca.insertAdjacentHTML('beforeend',`<div style="text-align:center;padding:16px"><button class="btn btn-success" style="display:none">Ver mi informe →</button></div>`);
+    } else {
+      document.getElementById('miChatFooter').style.display='block';
+    }
+  } else {
+    ca.innerHTML=`<div class="empty-state"><div style="font-size:36px">🤖</div><h3>Evaluación lista</h3><p>Haz clic para iniciar tu sesión de evaluación con IA.</p><button class="btn btn-primary" onclick="startMiEval()" style="margin-top:8px">▶ Iniciar mi evaluación</button></div>`;
+  }
+  showPage('mi-eval');
+}
+
+function addMiMsg(role,text,initials){
+  const area=document.getElementById('miChatArea');
+  if(!area)return;
+  const clean=text.replace(/===JSON_START===[\s\S]*?===JSON_END===/g,'').trim();
+  if(!clean)return;
+  const div=document.createElement('div');div.className=`msg ${role}`;
+  const av=document.createElement('div');av.className=`msg-av${role==='ai'?' ai':''}`;av.textContent=role==='ai'?'IA':(initials||'U');
+  const bubble=document.createElement('div');bubble.className='msg-bubble';
+  bubble.innerHTML=clean.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  div.appendChild(av);div.appendChild(bubble);area.appendChild(div);area.scrollTop=area.scrollHeight;
+}
+
+async function startMiEval(){
+  const userId=currentUser.id;
+  const person=team.find(p=>p.id===userId);
+  if(!person)return;
+  document.getElementById('miChatArea').innerHTML='';
+  document.getElementById('miChatFooter').style.display='block';
+  await callClaudeCollab(null);
+}
+
+async function callClaudeCollab(userText){
+  const userId=currentUser.id;
+  const person=team.find(p=>p.id===userId);
+  if(!person)return;
+  const ev=evaluations[userId];
+  isLoading=true;
+  const btn=document.getElementById('miSendBtn');
+  if(btn)btn.disabled=true;
+
+  if(userText){ev.messages.push({role:'user',content:userText});addMiMsg('user',userText,person.initials);}
+
+  const area=document.getElementById('miChatArea');
+  const typing=document.createElement('div');typing.id='miTyping';typing.className='msg ai';
+  typing.innerHTML=`<div class="msg-av ai">IA</div><div class="msg-bubble"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
+  area.appendChild(typing);area.scrollTop=area.scrollHeight;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:person.prompt,
+        messages:userText?ev.messages:[{role:'user',content:'Comienza la evaluación ahora.'}]})});
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'Error');}
+    const data=await res.json();const reply=data.content[0].text;
+    document.getElementById('miTyping')?.remove();
+    addMiMsg('ai',reply,person.initials);
+    ev.messages.push({role:'assistant',content:reply});
+    if(reply.includes('===JSON_START===')){
+      parseResult(userId,reply);
+      ev.done=true;
+      document.getElementById('miChatFooter').style.display='none';
+      area.insertAdjacentHTML('beforeend',`<div style="text-align:center;padding:16px;background:var(--green-bg);border-radius:var(--r);margin:0 18px"><p style="color:var(--green);font-weight:700;font-size:14px">✅ ¡Evaluación completada! Tu informe ha sido enviado a la Administradora de TI.</p></div>`);
+    }
+  }catch(err){
+    document.getElementById('miTyping')?.remove();
+    addMiMsg('ai',`⚠️ ${err.message}`,person.initials);
+  }
+  isLoading=false;if(btn)btn.disabled=false;
+}
+
+async function sendMiMessage(){
+  const input=document.getElementById('miUserInput');
+  const text=input.value.trim();
+  if(!text||isLoading)return;
+  input.value='';input.style.height='auto';
+  await callClaudeCollab(text);
+}
+
+function renderMiInforme(){
+  const userId=currentUser.id;
+  const r=evaluations[userId]?.result;
+  const person=team.find(p=>p.id===userId);
+  const c=document.getElementById('miInformeContent');
+  if(!r||!person){c.innerHTML='<div style="padding:40px;text-align:center;color:var(--text2)">Completa la evaluación primero.</div>';return;}
+
+  // Colaborador no ve sugerencias_admin
+  const dims=DIMS.map((d,i)=>({key:d,label:DIM_LABELS[i],score:r.scores?.[d]||'—'}));
+  const cx=100,cy=100,rad=75;
+  const angles=DIMS.map((_,i)=>((i*60)-90)*Math.PI/180);
+  function rpt(i,v){const a=angles[i];const rv=(v/3)*rad;return{x:cx+rv*Math.cos(a),y:cy+rv*Math.sin(a)};}
+  function gpt(i,f){const a=angles[i];return{x:cx+f*rad*Math.cos(a),y:cy+f*rad*Math.sin(a)};}
+  const gridSVG=[1,2,3].map(v=>{const pts=DIMS.map((_,i)=>gpt(i,v/3));return`<polygon points="${pts.map(p=>`${p.x},${p.y}`).join(' ')}" fill="none" stroke="var(--border)" stroke-width="0.5"/>`;}).join('');
+  const axesSVG=DIMS.map((_,i)=>{const p=gpt(i,1);return`<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="var(--border)" stroke-width="0.5"/>`;}).join('');
+  const vals=DIMS.map(d=>SCORE_VAL[r.scores?.[d]]||0);
+  const radarPts=vals.map((v,i)=>rpt(i,v));
+  const radarPath=radarPts.map((p,i)=>`${i===0?'M':'L'}${p.x},${p.y}`).join(' ')+'Z';
+
+  c.innerHTML=`
+    <div class="collab-hero">
+      <div class="collab-av" style="background:${person.color}22;color:${person.color}">${person.initials}</div>
+      <div class="collab-info"><h2>Mi Informe de Evaluación</h2><p>${person.role} · ${new Date().toLocaleDateString('es-GT',{year:'numeric',month:'long',day:'numeric'})}</p></div>
+    </div>
+    <div class="report-section">
+      <div class="report-section-title">Mis resultados</div>
+      <div style="display:flex;flex-direction:column;gap:0;align-items:center;margin-bottom:16px">
+        <svg viewBox="0 0 200 200" style="width:180px">${gridSVG}${axesSVG}
+          <path d="${radarPath}" fill="${person.color}" fill-opacity="0.15" stroke="${person.color}" stroke-width="1.5"/>
+          ${radarPts.map(p=>`<circle cx="${p.x}" cy="${p.y}" r="3" fill="${person.color}"/>`).join('')}
+        </svg>
+      </div>
+      ${dims.map(d=>`<div class="dim-row"><div class="dim-label">${d.label}</div><div class="dim-bar-wrap"><div class="dim-bar" style="width:${scorePct(d.score)}%;background:${scoreColor(d.score)}"></div></div><div class="dim-score" style="color:${scoreColor(d.score)}">${d.score}</div></div>`).join('')}
+    </div>
+    ${r.fortalezas?.length?`<div class="report-section"><div class="report-section-title">Mis fortalezas</div><div class="tag-list">${r.fortalezas.map(f=>`<span class="tag tag-success">✓ ${f}</span>`).join('')}</div></div>`:''}
+    ${r.mejoras?.length?`<div class="report-section"><div class="report-section-title">Áreas de mejora</div><div class="tag-list">${r.mejoras.map(m=>`<span class="tag tag-warning">↑ ${m}</span>`).join('')}</div></div>`:''}
+    ${r.recomendacion?`<div class="report-section"><div class="report-section-title">Mi plan de desarrollo</div><p style="font-size:13px;color:var(--text);line-height:1.7">${r.recomendacion}</p></div>`:''}
+    ${r.temas_estudio?.length?`<div class="report-section"><div class="report-section-title">Plan de estudio</div><div class="tag-list">${r.temas_estudio.map(t=>`<span class="tag tag-accent">📚 ${t}</span>`).join('')}</div></div>`:''}
+    <div style="padding-bottom:32px"><button class="btn btn-primary" onclick="exportMiPDF()">⬇ Guardar informe en PDF</button></div>`;
+}
+
+// ── EXPORT PDF ─────────────────────────────────────────────────────────────
+function exportPersonPDF(id){ buildAndDownloadPDF(id, true); }
+function exportMiPDF() {
+  const userId = currentUser.id;
+  const r = evaluations[userId]?.result;
+  const person = team.find(p => p.id === userId);
+  if (!r || !person) { showNotif('Completa la evaluación primero', 'error'); return; }
+
+  const fecha = new Date().toLocaleDateString('es-GT', {year:'numeric', month:'long', day:'numeric'});
+  const dims = [
+    {label:'Conocimientos técnicos', score: r.scores?.conocimientos||'—'},
+    {label:'Habilidades prácticas',  score: r.scores?.practico||'—'},
+    {label:'Competencias blandas',   score: r.scores?.blando||'—'},
+    {label:'Liderazgo y ética',      score: r.scores?.liderazgo||'—'},
+    {label:'Clima laboral',          score: r.scores?.clima||'—'},
+    {label:'Autoevaluación 360',     score: r.scores?.auto360||'—'},
+  ];
+
+  function sc(s){return s==='Sobresaliente'?'#1a7a4a':s==='Competente'?'#1365de':'#8a5500';}
+  function scBg(s){return s==='Sobresaliente'?'#eaf5f0':s==='Competente'?'#e8f0fb':'#fdf3e0';}
+  function pct(s){return s==='Sobresaliente'?100:s==='Competente'?66:33;}
+
+  // Build radar SVG
+  const DIMS6 = ['conocimientos','practico','blando','liderazgo','clima','auto360'];
+  const SCORE_V = {'Sobresaliente':3,'Competente':2,'En desarrollo':1};
+  const cx=130, cy=130, rad=100;
+  const angles = DIMS6.map((_,i) => ((i*60)-90)*Math.PI/180);
+  const vals = DIMS6.map(d => SCORE_V[r.scores?.[d]]||0);
+  function rpt(i,v){const a=angles[i];const rv=(v/3)*rad;return{x:cx+rv*Math.cos(a),y:cy+rv*Math.sin(a)};}
+  function gpt(i,f){const a=angles[i];return{x:cx+f*rad*Math.cos(a),y:cy+f*rad*Math.sin(a)};}
+  const gridSVG = [1,2,3].map(v=>{const pts=DIMS6.map((_,i)=>gpt(i,v/3));return`<polygon points="${pts.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}" fill="none" stroke="#dce6f5" stroke-width="0.8"/>`;}).join('');
+  const axesSVG = DIMS6.map((_,i)=>{const p=gpt(i,1);return`<line x1="${cx}" y1="${cy}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}" stroke="#dce6f5" stroke-width="0.8"/>`;}).join('');
+  const radarPts = vals.map((v,i)=>rpt(i,v));
+  const radarPath = radarPts.map((p,i)=>`${i===0?'M':'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')+'Z';
+  const lbls = ['Conocimientos','Práctico','Blandas','Liderazgo','Clima','360'];
+  const lblOff = [[0,-14],[16,0],[16,14],[0,14],[-16,14],[-16,0]];
+  const lblSVG = lbls.map((l,i)=>{const p=gpt(i,1.28);const[ox,oy]=lblOff[i];return`<text x="${(p.x+ox).toFixed(1)}" y="${(p.y+oy).toFixed(1)}" text-anchor="middle" font-size="9" fill="#3d5a8a" font-family="Inter,sans-serif">${l}</text>`;}).join('');
+  const radarSVG = `<svg viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg" width="220" height="220">${gridSVG}${axesSVG}<path d="${radarPath}" fill="${person.color}" fill-opacity="0.12" stroke="${person.color}" stroke-width="1.5"/>${radarPts.map(p=>`<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.5" fill="${person.color}"/>`).join('')}${lblSVG}</svg>`;
+
+  const fortalezasHTML = (r.fortalezas||[]).map(f=>`<li>${f}</li>`).join('');
+  const mejorasHTML = (r.mejoras||[]).map(m=>`<li>${m}</li>`).join('');
+  const temasHTML = (r.temas_estudio||[]).map(t=>`<span class="tag">${t}</span>`).join('');
+  const barsHTML = dims.map(d=>`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+      <div style="width:160px;font-size:12px;color:#3d5a8a;flex-shrink:0">${d.label}</div>
+      <div style="flex:1;background:#e8f0fb;border-radius:3px;height:7px;overflow:hidden">
+        <div style="width:${pct(d.score)}%;height:100%;background:${sc(d.score)};border-radius:3px"></div>
+      </div>
+      <div style="width:105px;text-align:right;font-size:11px;font-weight:700;color:${sc(d.score)};background:${scBg(d.score)};padding:2px 8px;border-radius:20px;flex-shrink:0">${d.score}</div>
+    </div>`).join('');
+  const climaHTML = r.clima ? Object.entries(r.clima).map(([k,v])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div style="width:180px;font-size:12px;color:#3d5a8a">${{satisfaccion:'Satisfacción',motivacion:'Motivación',pertenencia:'Pertenencia',carga:'Carga de trabajo',balance:'Balance vida-trabajo'}[k]||k}</div>
+      <div style="display:flex;gap:4px">${[1,2,3,4,5].map(i=>`<div style="width:10px;height:10px;border-radius:50%;background:${i<=v?'#1365de':'#dce6f5'}"></div>`).join('')}</div>
+      <div style="font-size:11px;color:#7a96c2;margin-left:4px">${v}/5</div>
+    </div>`).join('') : '';
+  const auto360HTML = r.auto360 ? Object.entries(r.auto360).map(([k,v])=>`
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+      <div style="width:160px;font-size:12px;color:#3d5a8a">${{tecnico:'Conocimiento técnico',servicio:'Servicio al usuario',equipo:'Trabajo en equipo',liderazgo:'Liderazgo',tiempo:'Gestión del tiempo'}[k]||k}</div>
+      <div style="flex:1;background:#eeecfb;border-radius:3px;height:6px;overflow:hidden">
+        <div style="width:${(v/10)*100}%;height:100%;background:#5340b5;border-radius:3px"></div>
+      </div>
+      <div style="width:40px;text-align:right;font-size:11px;font-weight:700;color:#5340b5">${v}/10</div>
+    </div>`).join('') : '';
+
+  // Pre-compute optional sections
+  const secFortalezas = fortalezasHTML ? '<div class="section"><div class="section-title">Fortalezas identificadas</div><ul>' + fortalezasHTML + '</ul></div>' : '';
+  const secMejoras = mejorasHTML ? '<div class="section"><div class="section-title">Áreas de mejora</div><ul>' + mejorasHTML + '</ul></div>' : '';
+  const secRec = r.recomendacion ? '<div class="section"><div class="section-title">Recomendación de desarrollo</div><p class="body">' + r.recomendacion + '</p></div>' : '';
+  const secTemas = temasHTML ? '<div class="section"><div class="section-title">Plan de estudio sugerido</div><div>' + temasHTML + '</div></div>' : '';
+  const secClima = climaHTML ? '<div class="section"><div class="section-title">Clima laboral declarado</div>' + climaHTML + '</div>' : '';
+  const secAuto360 = auto360HTML ? '<div class="section"><div class="section-title">Autoevaluación 360</div>' + auto360HTML + '</div>' : '';
+
+  const pdfHTML = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Informe de Evaluación — ${person.name}</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  @media print {
+    @page { margin: 1.8cm 2cm; size: A4; }
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .no-print { display: none !important; }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; color: #0a1f4e; background: #fff; font-size: 13px; }
+  .page { max-width: 780px; margin: 0 auto; padding: 40px 40px 60px; }
+  .print-btn { position: fixed; bottom: 24px; right: 24px; padding: 12px 22px; background: #1365de; color: #fff; border: none; border-radius: 7px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; box-shadow: 0 4px 14px rgba(19,101,222,0.3); }
+  .header { border-bottom: 3px solid #1365de; padding-bottom: 18px; margin-bottom: 28px; }
+  .header-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 4px; }
+  .hospital-name { font-size: 11px; font-weight: 700; color: #7a96c2; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+  h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; color: #0a1f4e; }
+  .role { font-size: 13px; color: #3d5a8a; margin-top: 4px; }
+  .fecha { font-size: 11px; color: #7a96c2; margin-top: 6px; }
+  .section { margin-bottom: 24px; break-inside: avoid; }
+  .section-title { font-size: 10px; font-weight: 800; color: #7a96c2; text-transform: uppercase; letter-spacing: 0.1em; padding-bottom: 8px; border-bottom: 1px solid #dce6f5; margin-bottom: 14px; }
+  .charts-row { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: center; }
+  ul { list-style: none; padding: 0; }
+  ul li { font-size: 13px; color: #0a1f4e; padding: 5px 0 5px 16px; border-bottom: 1px solid #f3f7fe; position: relative; line-height: 1.5; }
+  ul li::before { content: '—'; position: absolute; left: 0; color: #b8ccee; }
+  p.body { font-size: 13px; color: #0a1f4e; line-height: 1.75; }
+  .tag { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; background: #e8f0fb; color: #1365de; margin: 3px 3px 3px 0; }
+  .footer { margin-top: 40px; padding-top: 14px; border-top: 1px solid #dce6f5; text-align: center; font-size: 10px; color: #7a96c2; }
+  .confidential { display: inline-block; margin-top: 5px; padding: 3px 12px; background: #f3f7fe; border: 1px solid #dce6f5; border-radius: 20px; }
+</style>
+</head>
+<body>
+<button class="print-btn no-print" onclick="window.print()">🖨 Guardar como PDF</button>
+<div class="page">
+  <div class="header">
+    <div class="hospital-name">Hospital Herrera Llerandi · Departamento de TI</div>
+    <h1>${person.name}</h1>
+    <div class="role">${person.role}</div>
+    <div class="fecha">Evaluación de Talento · ${fecha}</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Resultados por dimensión</div>
+    <div class="charts-row">
+      <div>${radarSVG}</div>
+      <div>${barsHTML}</div>
+    </div>
+  </div>
+
+  ${secFortalezas}
+
+  ${secMejoras}
+
+  ${secRec}
+
+  ${secTemas}
+
+  ${secClima}
+
+  ${secAuto360}
+
+  <div class="footer">
+    Informe generado automáticamente · Portal de Evaluación TI · Hospital Herrera Llerandi<br>
+    <span class="confidential">Documento personal · ${fecha}</span>
+  </div>
+</div>
+</body>
+</html>`;
+
+  const blob = new Blob([pdfHTML], {type: 'text/html;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const win = window.open(url, '_blank');
+  if (win) {
+    win.addEventListener('load', function() {
+      setTimeout(function() { win.print(); }, 600);
+    });
+  }
+  setTimeout(() => URL.revokeObjectURL(url), 30000);
+  showNotif('✓ Se abrió el informe listo para guardar como PDF', 'success');
+}
+
+function buildAndDownloadPDF(id, isAdmin){
+  const r=evaluations[id]?.result;
+  const person=team.find(p=>p.id===id);
+  if(!r||!person){showNotif('Sin datos para exportar','error');return;}
+  const fecha=new Date().toLocaleDateString('es-GT',{year:'numeric',month:'long',day:'numeric'});
+  const dims=DIMS.map((d,i)=>({label:DIM_LABELS[i],score:r.scores?.[d]||'—'}));
+  const html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Evaluación — ${person.name}</title>
+<style>
+@media print{@page{margin:1.8cm;}.no-print{display:none!important;}body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+*{box-sizing:border-box;margin:0;padding:0;}body{font-family:-apple-system,sans-serif;color:#1a1917;background:#fff;}
+.page{max-width:780px;margin:0 auto;padding:40px 36px 60px;}
+.print-btn{position:fixed;bottom:24px;right:24px;padding:12px 20px;background:#1a1917;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;}
+.header{padding-bottom:18px;border-bottom:2.5px solid #1a1917;margin-bottom:28px;}
+.tag{font-size:10px;font-weight:700;color:#888;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;}
+h1{font-size:26px;font-weight:900;margin-bottom:6px;}
+.meta{font-size:12px;color:#666;}
+.section{margin-bottom:26px;}
+.st{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.08em;padding-bottom:8px;border-bottom:1px solid #eee;margin-bottom:14px;}
+.dim-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.dl{font-size:12px;color:#333;width:180px;flex-shrink:0;}
+.db{flex:1;background:#f0f0f0;border-radius:4px;height:7px;overflow:hidden;}
+.dbf{height:100%;border-radius:4px;}
+.ds{font-size:11px;font-weight:700;width:100px;text-align:right;flex-shrink:0;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;}
+.tg{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;}
+.tg-s{background:#e8f5ee;color:#1a6e3e;}.tg-w{background:#fef3e0;color:#7a4a00;}.tg-a{background:#eef3fb;color:#1a4f8a;}.tg-p{background:#f0eeff;color:#4a3a9e;}
+.sug{background:#eef3fb;border:1px solid #dce8f7;border-radius:6px;padding:12px;margin-top:8px;}
+.sug-l{font-size:10px;font-weight:700;color:#1a4f8a;text-transform:uppercase;margin-bottom:6px;}
+p.body{font-size:13px;color:#333;line-height:1.7;}
+.footer{margin-top:40px;padding-top:12px;border-top:1px solid #eee;text-align:center;font-size:10px;color:#bbb;}
+</style></head><body>
+<button class="print-btn no-print" onclick="window.print()">🖨 Guardar como PDF</button>
+<div class="page">
+  <div class="header">
+    <div class="tag">Hospital Herrera Llerandi · Departamento de TI · ${isAdmin?'Informe Administrativo':'Informe de Colaborador'}</div>
+    <h1>${person.name}</h1>
+    <div class="meta">${person.role} · ${fecha}</div>
+  </div>
+  <div class="section"><div class="st">Resultados por dimensión</div>
+    ${dims.map(d=>`<div class="dim-row"><div class="dl">${d.label}</div><div class="db"><div class="dbf" style="width:${scorePct(d.score)}%;background:${scoreColor(d.score)}"></div></div><div class="ds" style="color:${scoreColor(d.score)}">${d.score}</div></div>`).join('')}
+  </div>
+  ${r.fortalezas?.length?`<div class="section"><div class="st">Fortalezas</div><div class="tags">${r.fortalezas.map(f=>`<span class="tg tg-s">✓ ${f}</span>`).join('')}</div></div>`:''}
+  ${r.mejoras?.length?`<div class="section"><div class="st">Áreas de mejora</div><div class="tags">${r.mejoras.map(m=>`<span class="tg tg-w">↑ ${m}</span>`).join('')}</div></div>`:''}
+  ${r.recomendacion?`<div class="section"><div class="st">Recomendación de desarrollo</div><p class="body">${r.recomendacion}</p></div>`:''}
+  ${r.temas_estudio?.length?`<div class="section"><div class="st">Plan de estudio</div><div class="tags">${r.temas_estudio.map(t=>`<span class="tg tg-a">📚 ${t}</span>`).join('')}</div></div>`:''}
+  ${isAdmin&&r.sugerencias_admin?`<div class="section"><div class="st" style="color:#1a4f8a">Sugerencias estratégicas (solo admin)</div><div class="sug"><div class="sug-l">Observaciones para la Administradora</div><p class="body">${r.sugerencias_admin}</p></div></div>`:''}
+  ${r.clima?`<div class="section"><div class="st">Clima laboral</div>${Object.entries(r.clima).map(([k,v])=>`<div class="dim-row"><div class="dl">${{satisfaccion:'Satisfacción',motivacion:'Motivación',pertenencia:'Pertenencia',carga:'Carga',balance:'Balance'}[k]||k}</div><div class="db"><div class="dbf" style="width:${(v/5)*100}%;background:#2f81f7"></div></div><div class="ds" style="color:#2f81f7">${v}/5</div></div>`).join('')}</div>`:''}
+  <div class="footer">Documento generado automáticamente · Portal de Evaluación TI · Hospital Herrera Llerandi<br><span style="display:inline-block;margin-top:4px;padding:2px 10px;background:#f9f8f6;border:1px solid #eee;border-radius:20px">CONFIDENCIAL · No modificar · ${fecha}</span></div>
+</div></body></html>`;
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`Evaluacion_${person.name.replace(/\s+/g,'_')}_${new Date().toISOString().slice(0,10)}.html`;a.click();
+  URL.revokeObjectURL(url);
+  showNotif('✓ Informe descargado. Ábrelo y usa Imprimir → Guardar como PDF.','success');
+}
+
+// ── NOTIFICATIONS ──────────────────────────────────────────────────────────
+function showNotif(msg, type='info'){
+  const el=document.getElementById('notif');
+  el.textContent=msg;el.className=`notif show ${type}`;
+  setTimeout(()=>el.classList.remove('show'),4000);
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+loadUsers();
+
+
+
+document.getElementById('loginUser').focus();
+
+</script>
+</body>
+</html>
